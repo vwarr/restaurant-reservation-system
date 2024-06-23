@@ -1,8 +1,15 @@
 package org.group4;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class RestaurantController {
+    private final HashMap<String, Restaurant> restaurants = new HashMap<>();
+    private final HashMap<String, Customer> customers = new HashMap<>();
+
     public void commandLoop() {
         Scanner commandLineInput = new Scanner(System.in);
         String wholeInputLine;
@@ -15,36 +22,50 @@ public class RestaurantController {
                 wholeInputLine = commandLineInput.nextLine();
                 tokens = wholeInputLine.split(DELIMITER);
                 System.out.println(" echo >> " + wholeInputLine);
-
+                // TODO: change print statements to match expected
                 if (tokens[0].indexOf("//") == 0) {
                     // System.out.println(wholeInputLine);
 
                     // instructions to create simulation resources
-                } else if (wholeInputLine.equals("")) {
+                } else if (wholeInputLine.isEmpty()) {
                     continue;
                 } else if (tokens[0].equals("create_restaurant")) {
-                    System.out
-                            .print("unique_identifier: " + tokens[1] + ", name: " + tokens[2] + ", city: " + tokens[3]);
-                    System.out.print(", state: " + tokens[4] + ", zip_code: " + tokens[5] + ", rating: " + tokens[6]);
-                    System.out.println(", top_10: " + tokens[7] + ", seating_capacity: " + tokens[8]);
-
+                    Address address = new Address(tokens[3], tokens[4], Integer.parseInt(tokens[5]));
+                    Restaurant restaurant = new Restaurant(tokens[1], tokens[2], address, Integer.parseInt(tokens[6]),
+                            Boolean.parseBoolean(tokens[7]), Integer.parseInt(tokens[8]));
+                    System.out.println(restaurant);
+                    restaurants.put(restaurant.getId(), restaurant);
                 } else if (tokens[0].equals("create_customer")) {
-                    System.out.print("unique_identifier: " + tokens[1] + ", first_name: " + tokens[2] + ", last_name: "
-                            + tokens[3]);
-                    System.out.print(", city: " + tokens[4] + ", state: " + tokens[5] + ", zip_code: " + tokens[6]);
-                    System.out.println(", funds: " + tokens[7]);
-
+                    Address address = new Address(tokens[4], tokens[5], Integer.parseInt(tokens[6]));
+                    Customer customer = new Customer(tokens[1], tokens[2], tokens[3], address,
+                            Double.parseDouble(tokens[7]));
+                    System.out.println(customer);
+                    customers.put(customer.getId(), customer);
                 } else if (tokens[0].equals("make_reservation")) {
-                    System.out.print("customer_identifier: " + tokens[1] + ", restaurant_identifier: " + tokens[2]
-                            + ", party_size: " + tokens[3]);
-                    System.out.println(", reservation_date: " + tokens[4] + ", reservation_time: " + tokens[5]
-                            + ", credits: " + tokens[6]);
+                    Customer customer = customers.get(tokens[1]);
+                    Restaurant restaurant = restaurants.get(tokens[2]);
+                    // Turns the date (example: 2024-05-24) and the time (ex: 19:00) to an ISO datetime: "2024-05-24T19:00:00"
+                    LocalDateTime dateTime = LocalDateTime.parse("%sT%s:00".formatted(tokens[4], tokens[5]));
 
+                    Reservation res = restaurant.makeReservation(customer, Integer.parseInt(tokens[3]), dateTime,
+                            Integer.parseInt(tokens[6]));
+                    System.out.println(res);
                 } else if (tokens[0].equals("customer_arrival")) {
                     System.out.print("customer_identifier: " + tokens[1] + ", restaurant_identifier: " + tokens[2]);
-                    System.out.println(", reservation_date: " + tokens[3] + ", arrival_time: " + tokens[4]
-                            + ", reservation_time: " + tokens[5]);
+                    System.out.println(
+                            ", reservation_date: " + tokens[3] + ", arrival_time: " + tokens[4] + ", reservation_time: " + tokens[5]);
+                    Customer customer = customers.get(tokens[1]);
+                    Restaurant restaurant = restaurants.get(tokens[2]);
 
+                    LocalDate reservationDate = LocalDate.parse(tokens[3]);
+                    LocalTime reservationTime = LocalTime.parse(tokens[5]);
+
+                    LocalDateTime dateTime = LocalDateTime.of(reservationDate, reservationTime);
+
+                    LocalTime arrivalTime = LocalTime.parse(tokens[4]);
+                    ArrivalStatus result = restaurant.customerArrives(customer, dateTime, arrivalTime);
+
+                    System.out.println("Arrival status: " + result);
                 } else if (tokens[0].equals("exit")) {
                     System.out.println("stop acknowledged");
                     break;
@@ -67,4 +88,5 @@ public class RestaurantController {
     void displayMessage(String status, String text_output) {
         System.out.println(status.toUpperCase() + ": " + text_output.toLowerCase());
     }
+
 }

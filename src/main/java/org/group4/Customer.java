@@ -1,18 +1,22 @@
 package org.group4;
 
+import java.util.UUID;
+
 class Customer {
+    private final String id;
     private final String firstName;
     private final String lastName;
+    private final Address address;
+    private double funds;
     private int credits;
     private int missedReservations;
-    private int funds;
 
-    public Customer(String firstName, string lastName, int credits, int missedReservations, int funds) {
+    public Customer(String uniqueId, String firstName, String lastName, Address address, double funds) {
+        this.id = (uniqueId == null) ? UUID.randomUUID().toString() : uniqueId;
         this.firstName = firstName;
         // NOTE: We must consider the case when this is optional, like with Beyonce
         this.lastName = lastName;
-        this.credits = credits;
-        this.missedReservations = missedReservations;
+        this.address = address;
         this.funds = funds;
     }
 
@@ -40,12 +44,20 @@ class Customer {
         this.missedReservations = missedReservations;
     }
 
-    public int getFunds() {
+    public double getFunds() {
         return funds;
     }
 
-    public void setFunds(int funds) {
+    public void setFunds(double funds) {
         this.funds = funds;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public Address getAddress() {
+        return address;
     }
 
 }
