@@ -1,37 +1,74 @@
 package org.group4;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 class Reservation {
-    private final LocalDateTime dateTime;
+    private final Customer customer;
+    private LocalDateTime dateTime;
+    private LocalDateTime endTime;
     private final int credits;
-    private final int partySize;
-    private ReservationStatus status;
+    private int partySize;
 
-    public Reservation(LocalDateTime dateTime, int credits, int partySize, ReservationStatus status) {
-        this.dateTime = dateTime;
-        this.credits = credits;
+    public static final int RESERVATION_DURATION = 2;
+
+    public static String generateKey(Customer _customer, LocalDateTime _dateTime) {
+        return String.format("Customer=%s-DateTime=%s", _customer.getId(), _dateTime);
+    }
+
+    public Reservation(Customer customer, int partySize, LocalDateTime dateTime, int credits) {
+        this.customer = customer;
         this.partySize = partySize;
-        this.status = status;
+        this.dateTime = dateTime;
+        this.endTime = dateTime.plusHours(2);
+        this.credits = credits;
     }
 
     public LocalDateTime getDateTime() {
         return dateTime;
     }
 
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+        this.endTime = dateTime.plusHours(2);
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
     public int getCredits() {
         return credits;
+    }
+
+    public void setPartySize(int partySize) {
+        this.partySize = partySize;
     }
 
     public int getPartySize() {
         return partySize;
     }
 
-    public ReservationStatus getStatus() {
-        return status;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setStatus(ReservationStatus status) {
-        this.status = status;
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "customer=" + customer +
+                ", dateTime=" + dateTime +
+                ", endTime=" + endTime +
+                ", credits=" + credits +
+                ", partySize=" + partySize +
+                '}';
     }
+
+    /**
+     * @return The unique key used to identify this reservation
+     */
+    public String getKey() {
+        return generateKey(this.customer,this.dateTime);
+    }
+
 }

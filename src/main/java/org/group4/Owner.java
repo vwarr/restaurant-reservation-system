@@ -2,12 +2,15 @@ package org.group4;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 class Owner {
-    private LocalDate startDate;
-    private List<String> licenses;
+    private final String id;
+    private final LocalDate startDate;
+    private final List<License> licenses;
 
-    public Owner(LocalDate startDate, List<String> licenses) {
+    public Owner(LocalDate startDate, List<License> licenses, String uniqueId) {
+        this.id = (uniqueId == null) ? UUID.randomUUID().toString() : uniqueId;
         this.startDate = startDate;
         this.licenses = licenses;
     }
@@ -16,17 +19,15 @@ class Owner {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public List<String> getLicenses() {
+    public List<License> getLicenses() {
         return licenses;
     }
 
-    public void addLicense(String license) {
-        // Need to validate the liscenses
-        licenses.add(license);
+    public void addLicense(License license) {
+        this.licenses.add(license);
     }
 
+    public String getId() {
+        return id;
+    }
 }
