@@ -3,18 +3,15 @@ package org.group4;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-class Reservation {
+public class Reservation {
     private final Customer customer;
     private LocalDateTime dateTime;
     private LocalDateTime endTime;
     private final int credits;
     private int partySize;
+    private ReservationStatus status = ReservationStatus.PENDING;
 
     public static final int RESERVATION_DURATION = 2;
-
-    public static String generateKey(Customer _customer, LocalDateTime _dateTime) {
-        return String.format("Customer=%s-DateTime=%s", _customer.getId(), _dateTime);
-    }
 
     public Reservation(Customer customer, int partySize, LocalDateTime dateTime, int credits) {
         this.customer = customer;
@@ -53,6 +50,18 @@ class Reservation {
         return customer;
     }
 
+    public Identifier getIdentifier() {
+        return new Identifier(customer, dateTime);
+    }
+
+    public ReservationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ReservationStatus status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "Reservation{" +
@@ -64,11 +73,31 @@ class Reservation {
                 '}';
     }
 
-    /**
-     * @return The unique key used to identify this reservation
-     */
-    public String getKey() {
-        return generateKey(this.customer,this.dateTime);
-    }
+    public static class Identifier {
+        private final Customer customer;
+        private final LocalDateTime dateTime;
 
+        public Identifier(Customer customer, LocalDateTime dateTime) {
+            this.customer = customer;
+            this.dateTime = dateTime;
+        }
+
+        public static Identifier of(Customer customer, LocalDateTime dateTime) {
+            return new Identifier(customer, dateTime);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(customer, dateTime);
+        }
+
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Identifier that = (Identifier) o;
+            return Objects.equals(customer, that.customer) && Objects.equals(dateTime, that.dateTime);
+        }
+    }
 }

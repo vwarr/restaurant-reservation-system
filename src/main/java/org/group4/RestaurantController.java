@@ -50,87 +50,30 @@ public class RestaurantController {
                         Reservation res = restaurant.makeReservation(customer, Integer.parseInt(tokens[3]), dateTime,
                                 Integer.parseInt(tokens[6]));
                         System.out.printf("Reservation requested for %s %s", customer.getFirstName(), customer.getLastName());
-                        System.out.printf("\nReservation confirmed");
+                        System.out.print("\nReservation confirmed");
                         System.out.printf("\nReservation made for %s (%s %s) at %s\n", customer.getId(), customer.getFirstName(), customer.getLastName(), restaurant.getName());
-                    } catch(ReservationConflictException rce) {
+                    } catch(ReservationException.Conflict rce) {
                         System.out.printf("Reservation requested for %s %s", customer.getFirstName(), customer.getLastName());
-                        System.out.printf("\nReservation request denied, customer already has reservation with another restaurant within 2 hours of the requested time\n");
-                    } catch(NoSpaceException nse) {
+                        System.out.print("\nReservation request denied, customer already has reservation with another restaurant within 2 hours of the requested time\n");
+                    } catch(ReservationException.FullyBooked nse) {
                         System.out.printf("Reservation requested for %s %s", customer.getFirstName(), customer.getLastName());
-                        System.out.printf("\nReservation request denied, table has another active reservation within 2 hours of the requested time\n");
+                        System.out.print("\nReservation request denied, table has another active reservation within 2 hours of the requested time\n");
                     }
                 } else if (tokens[0].equals("customer_arrival")) {
                     System.out.print("customer_identifier: " + tokens[1] + ", restaurant_identifier: " + tokens[2]);
                     System.out.println(
                             ", reservation_date: " + tokens[3] + ", arrival_time: " + tokens[4] + ", reservation_time: " + tokens[5]);
+
                     Customer customer = customers.get(tokens[1]);
                     Restaurant restaurant = restaurants.get(tokens[2]);
 
                     LocalDate reservationDate = LocalDate.parse(tokens[3]);
-                    
                     LocalTime reservationTime = tokens[5].equals("null") ? null : LocalTime.parse(tokens[5]);
-
-                    // LocalDateTime dateTime = LocalDateTime.of(reservationDate, reservationTime);
-
                     LocalTime arrivalTime = LocalTime.parse(tokens[4]);
-                    ArrivalStatus result;
-                    try {
-                        result = restaurant.customerArrives(customer, reservationDate, arrivalTime, reservationTime);
-                        if (result == ArrivalStatus.ON_TIME) {
-                            System.out.printf("Customer %s (%s %s) has arrived at %s", customer.getId(), customer.getFirstName(), customer.getLastName(), restaurant.getName());
-                            System.out.printf("\n%s %s - Successfully completed reservation", customer.getFirstName(), customer.getLastName());
-                            System.out.printf("\nFull credits rewarded");
-                            System.out.printf("\nSeats were available, %s %s seated", customer.getFirstName(), customer.getLastName());
-                            System.out.printf("\nCredits: %d", customer.getCredits());
-                            System.out.printf("\nMisses: %d\n", customer.getMissedReservations());
-                        } else if (result == ArrivalStatus.EARLY) {
-                            System.out.printf("Customer %s (%s %s) has arrived early at %s", customer.getId(), customer.getFirstName(), customer.getLastName(), restaurant.getName());
-                            System.out.printf("\nPlease come back during the reservation window");
-                            System.out.printf("\nNo credits rewarded and no misses added");
-                            System.out.printf("\nCredits: %d", customer.getCredits());
-                            System.out.printf("\nMisses: %d\n", customer.getMissedReservations());
-                        } else if (result == ArrivalStatus.LATE) {
-                            System.out.printf("Customer %s (%s %s) has arrived late at %s", customer.getId(), customer.getFirstName(), customer.getLastName(), restaurant.getName());
-                            System.out.printf("\n%s %s - Missed reservation", customer.getFirstName(), customer.getLastName());
-                            System.out.printf("\nNo credits rewarded and 1 miss added");
-                            System.out.printf("\nSeats were available, %s %s seated", customer.getFirstName(), customer.getLastName());
-                            System.out.printf("\nCredits: %d", customer.getCredits());
-                            System.out.printf("\nMisses: %d", customer.getMissedReservations());
-                        } else if (result == ArrivalStatus.WALK_IN) {
-                            System.out.printf("%s %s - Walk-in party", customer.getFirstName(), customer.getLastName());
-                            System.out.printf("\nNo reservation, however open table so request validated");
-                            System.out.printf("\nNo credits rewarded and no misses added");
-                            System.out.printf("\nSeats were available, %s %s seated", customer.getFirstName(), customer.getLastName());
-                            System.out.printf("\nCredits: %d", customer.getCredits());
-                            System.out.printf("\nMisses: %d", customer.getMissedReservations());
-                        }
-                        else if (result == ArrivalStatus.LATE_RESET) {
-                            System.out.printf("Customer %s (%s %s) has arrived late at %s", customer.getId(), customer.getFirstName(), customer.getLastName(), restaurant.getName());
-                            System.out.printf("\n%s %s - Missed reservation", customer.getFirstName(), customer.getLastName());
-                            System.out.printf("\nNo credits rewarded and 1 miss added");
-                            System.out.printf("\nMisses: 3");
-                            System.out.printf("\n%s %s - 3 Misses reached, both misses and credits will reset back to 0", customer.getFirstName(), customer.getLastName());
-                            System.out.printf("\nSeats were available, %s %s seated", customer.getFirstName(), customer.getLastName());
-                            System.out.printf("\nCredits: %d", customer.getCredits());
-                            System.out.printf("\nMisses: %d\n", customer.getMissedReservations());
-                        }
-                    } catch (NoSpaceException nse){
-                        if (reservationTime == null) {
-                            System.out.printf("%s %s - Walk-in party", customer.getFirstName(), customer.getLastName());
-                            System.out.printf("\nNo credits rewarded and no misses added");
-                            System.out.printf("\nNo reservation, however open table so request validated");
-                            System.out.printf("\nCredits: %d", customer.getCredits());
-                            System.out.printf("\nMisses: %d", customer.getMissedReservations());
-                            System.out.printf("\nSeats were not available, %s %s rejected.\n", customer.getFirstName(), customer.getLastName());
-                        } else {
-                            System.out.printf("Customer %s %s - Late arrival", customer.getFirstName(), customer.getLastName());
-                            System.out.printf("\nNo credits rewarded and no misses added");
-                            System.out.printf("\nNo reservation, however open table so request validated");
-                            System.out.printf("\nCredits: %d", customer.getCredits());
-                            System.out.printf("\nMisses: %d", customer.getMissedReservations());
-                            System.out.printf("\nSeats were not available, %s %s rejected.\n", customer.getFirstName(), customer.getLastName());
-                        }
-                    }
+
+                    StringBuilder result = restaurant.onCustomerArrival(customer, reservationDate, arrivalTime, reservationTime);
+                    result.append(IOMessages.getCustomerInfoMessage(customer));
+                    System.out.println(result);
                 } else if (tokens[0].equals("exit")) {
                     System.out.println("stop acknowledged");
                     break;
