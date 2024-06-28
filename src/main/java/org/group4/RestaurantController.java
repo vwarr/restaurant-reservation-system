@@ -71,7 +71,12 @@ public class RestaurantController {
                     LocalTime reservationTime = tokens[5].equals("null") ? null : LocalTime.parse(tokens[5]);
                     LocalTime arrivalTime = LocalTime.parse(tokens[4]);
 
-                    StringBuilder result = restaurant.onCustomerArrival(customer, reservationDate, arrivalTime, reservationTime);
+                    StringBuilder result = new StringBuilder();
+                    try {
+                        restaurant.onCustomerArrival(customer, reservationDate, arrivalTime, reservationTime, result);
+                    } catch(NoSpaceException e) {
+                        result.append(IOMessages.SEATS_UNAVAILABLE);
+                    }
                     result.append(IOMessages.getCustomerInfoMessage(customer));
                     System.out.println(result);
                 } else if (tokens[0].equals("exit")) {

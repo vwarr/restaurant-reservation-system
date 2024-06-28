@@ -76,12 +76,18 @@ public class Restaurant {
         return reservation;
     }
 
-    public StringBuilder onCustomerArrival(Customer customer, LocalDate reservationDate, LocalTime arrivalTime, LocalTime reservationTime) {
+    public void onCustomerArrival(Customer customer, LocalDate reservationDate, LocalTime arrivalTime,
+                                  LocalTime reservationTime) throws NoSpaceException {
+        onCustomerArrival(customer, reservationDate, arrivalTime, reservationTime, new StringBuilder());
+    }
+
+    public void onCustomerArrival(Customer customer, LocalDate reservationDate, LocalTime arrivalTime,
+                                           LocalTime reservationTime, StringBuilder builder) throws NoSpaceException {
         ArrivalStatus status = getArrivalStatus(customer, reservationDate, arrivalTime, reservationTime);
-        StringBuilder builder = new StringBuilder(IOMessages.getArrivalStatusMessage(status, customer, this));
+        builder.append(IOMessages.getArrivalStatusMessage(status, customer, this));
 
         if (status == ArrivalStatus.EARLY) {
-            return builder;
+            return ;
         }
 
         if (status == ArrivalStatus.ON_TIME) {
@@ -89,7 +95,7 @@ public class Restaurant {
             Reservation reservation = reservations.get(identifier);
             reservation.setStatus(ReservationStatus.SUCCESS);
             customer.incrementCredits(reservation.getCredits());
-            return builder;
+            return ;
         }
 
         int partySize = 1; // for walk-ins initially
@@ -118,10 +124,10 @@ public class Restaurant {
         } catch (ReservationException.FullyBooked | ReservationException.Conflict e) {
             // We catch both exceptions because in the current state of the tests, there is
             // no differentiation made between no seats for walk-ins and late
-            builder.append(IOMessages.SEATS_UNAVAILABLE);
+            throw new NoSpaceException();
         }
 
-        return builder;
+        return;
     }
 
     public ArrivalStatus getArrivalStatus(Customer customer, LocalDate reservationDate, LocalTime arrivalTime,
@@ -140,13 +146,19 @@ public class Restaurant {
         return ArrivalStatus.ON_TIME;
     }
 
-    public int checkSpace(LocalDateTime arrivalTime) {
+    public int checkSpace(LocalDateTime arrivalDateTime) {
         int usedSeats = 0;
-        for (Reservation reservation : reservations.values()) {
-            if (reservation.getDateTime().isEqual(arrivalTime) ||
-                    (reservation.getDateTime().isBefore(arrivalTime) &&
-                            reservation.getEndTime().isAfter(arrivalTime))) {
-                usedSeats += reservation.getPartySize();
+        for (Reservation r : reservations.values()) {
+//            LocalDateTime start1 = r.getDateTime();
+//            LocalDateTime end1 = r.getEndTime();
+//            LocalDateTime start2 = arrivalDateTime;
+//            LocalDateTime end2 = arrivalDateTime.plusHours(RESERVATION_DURATION);
+//
+//            boolean overlaps = !(end1.isBefore(start2) || start1.isAfter(end2));
+            boolean overlaps = r.getDateTime().isBefore(arrivalDateTime)
+                    && r.getEndTime().isAfter(arrivalDateTime);
+            if (overlaps || r.getDateTime().isEqual(arrivalDateTime)) {
+                usedSeats += r.getPartySize();
             }
         }
         return seatingCapacity - usedSeats;
@@ -165,7 +177,7 @@ public class Restaurant {
     }
 
     public static class Builder {
-        private String id;
+        private final String id;
         private String name = "Unnamed Restaurant";
         private Address address = new Address("123", "Unnamed Street", 12345);
         private int rating = 0;

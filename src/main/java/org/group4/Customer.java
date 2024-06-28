@@ -1,6 +1,5 @@
 package org.group4;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -147,7 +146,10 @@ public class Customer {
         }
 
         public Customer build() {
-            return new Customer(id, firstName, lastName, address, funds);
+            Customer customer =  new Customer(id, firstName, lastName, address, funds);
+            customer.setCredits(credits);
+            customer.setMissedReservations(missedReservations);
+            return customer;
         }
     }
 }
