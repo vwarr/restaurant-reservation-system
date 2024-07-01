@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class RestaurantController {
@@ -12,6 +13,7 @@ public class RestaurantController {
     private final HashMap<String, Customer> customers = new HashMap<>();
     private final HashMap<String, MenuItem> menuItems = new HashMap<>();
     private final HashMap<String, Owner> owners = new HashMap<>();
+    private final HashSet<String> ingredients = new HashSet<>();
 
     public void commandLoop() {
         Scanner commandLineInput = new Scanner(System.in);
