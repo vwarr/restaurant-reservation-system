@@ -1,36 +1,36 @@
 package org.group4;
 
+/**
+ * Responsible for formatting strings to be used in the output as required by each phase.
+ * By doing this we can focus on the Business Logic in other files while still satisfying
+ * our telemetry requirements
+ */
 public class IOMessages {
 
-//                                    System.out.printf("%s %s - Walk-in party", customer.getFirstName(),
-//                                            customer.getLastName());
-//                                System.out.print("\nNo reservation, however open table so request validated");
-//                                System.out.print("\nNo credits rewarded and no misses added");
-
-    static final String WALK_IN = """
+    private static final String WALK_IN = """
             %s %s - Walk-in party
             No credits rewarded and no misses added
             """;
 
-    static final String EARLY = """
+    private static final String EARLY = """
             Customer %s (%s %s) has arrived early at %s
             Please come back during the reservation window
             No credits rewarded and no misses added
             """;
 
-   static final String ON_TIME = """
+   private static final String ON_TIME = """
             Customer %s (%s %s) has arrived on time at %s
             %s %s - Successfully completed reservation
             Full credits rewarded
             """;
 
-    static final String LATE = """
+   private static final String LATE = """
             Customer %s (%s %s) has arrived late at %s
             %s %s - Missed reservation
             No credits rewarded and 1 miss added
             """;
 
-    static final String SEATS_AVAILABLE = """
+    private static final String SEATS_AVAILABLE = """
             Seats were available, %s %s seated
             """;
 
@@ -38,11 +38,15 @@ public class IOMessages {
         return SEATS_AVAILABLE.formatted(customer.getFirstName(), customer.getLastName());
     }
 
-    static final String SEATS_UNAVAILABLE = """
+    private static final String SEATS_UNAVAILABLE = """
             Seats not available - Request denied
             """;
 
-    public static String getArrivalStatusMessage(ArrivalStatus status, Customer customer, Restaurant restaurant) {
+    static String getNoSeatsMessage() {
+        return SEATS_UNAVAILABLE;
+    }
+
+    static String getArrivalStatusMessage(ArrivalStatus status, Customer customer, Restaurant restaurant) {
         switch (status) {
             case WALK_IN -> {
                 return WALK_IN.formatted(customer.getFirstName(), customer.getLastName());

@@ -12,6 +12,7 @@ public class Reservation {
     private ReservationStatus status = ReservationStatus.PENDING;
 
     public static final int RESERVATION_DURATION = 2;
+    public static final int WALK_IN_PARTY_SIZE = 4;
 
     public Reservation(Customer customer, int partySize, LocalDateTime dateTime, int credits) {
         this.customer = customer;

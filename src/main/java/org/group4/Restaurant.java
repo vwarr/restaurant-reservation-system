@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 import static org.group4.Reservation.RESERVATION_DURATION;
+import static org.group4.Reservation.WALK_IN_PARTY_SIZE;
 
 public class Restaurant {
     private final String id;
@@ -76,18 +77,22 @@ public class Restaurant {
         return reservation;
     }
 
+    /**
+     * Overload for the customer arrival method primarily for use in tests as you don't need the string builder
+     * @param customer the customer
+     * @param reservationDate the date they reserved
+     * @param arrivalTime the time of arrival
+     * @param reservationTime the supposed time of reservation, null if walk in
+     * @throws NoSpaceException if there are no seats for a late or walk in party
+     */
     public void onCustomerArrival(Customer customer, LocalDate reservationDate, LocalTime arrivalTime,
-                                  LocalTime reservationTime) throws NoSpaceException {
-        onCustomerArrival(customer, reservationDate, arrivalTime, reservationTime, new StringBuilder());
-    }
-
-    public void onCustomerArrival(Customer customer, LocalDate reservationDate, LocalTime arrivalTime,
-                                           LocalTime reservationTime, StringBuilder builder) throws NoSpaceException {
+                                           LocalTime reservationTime) throws NoSpaceException {
         ArrivalStatus status = getArrivalStatus(customer, reservationDate, arrivalTime, reservationTime);
-        builder.append(IOMessages.getArrivalStatusMessage(status, customer, this));
+
+        System.out.print(IOMessages.getArrivalStatusMessage(status, customer, this));
 
         if (status == ArrivalStatus.EARLY) {
-            return ;
+            return;
         }
 
         if (status == ArrivalStatus.ON_TIME) {
@@ -95,10 +100,10 @@ public class Restaurant {
             Reservation reservation = reservations.get(identifier);
             reservation.setStatus(ReservationStatus.SUCCESS);
             customer.incrementCredits(reservation.getCredits());
-            return ;
+            return;
         }
 
-        int partySize = 1; // for walk-ins initially
+        int partySize = WALK_IN_PARTY_SIZE; // for walk-ins initially
 
         // Late reservations require some preprocessing to work well
         if (status == ArrivalStatus.LATE) {
@@ -112,7 +117,7 @@ public class Restaurant {
             if (customer.getMissedReservations() == 3) {
                 customer.setMissedReservations(0);
                 customer.setCredits(0);
-                builder.append(IOMessages.getResetMessage(customer));
+                System.out.print(IOMessages.getResetMessage(customer));
             }
             partySize = reservation.getPartySize();
         }
@@ -120,14 +125,12 @@ public class Restaurant {
         // Attempt to seat walk in customer, whether they are late or not
         try {
             makeReservation(customer, partySize, LocalDateTime.of(reservationDate, arrivalTime), 0);
-            builder.append(IOMessages.getSeatsAvailableMessage(customer));
+            System.out.print(IOMessages.getSeatsAvailableMessage(customer));
         } catch (ReservationException.FullyBooked | ReservationException.Conflict e) {
             // We catch both exceptions because in the current state of the tests, there is
             // no differentiation made between no seats for walk-ins and late
             throw new NoSpaceException();
         }
-
-        return;
     }
 
     public ArrivalStatus getArrivalStatus(Customer customer, LocalDate reservationDate, LocalTime arrivalTime,

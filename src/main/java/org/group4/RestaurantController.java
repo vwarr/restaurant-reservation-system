@@ -61,8 +61,7 @@ public class RestaurantController {
                     }
                 } else if (tokens[0].equals("customer_arrival")) {
                     System.out.print("customer_identifier: " + tokens[1] + ", restaurant_identifier: " + tokens[2]);
-                    System.out.println(
-                            ", reservation_date: " + tokens[3] + ", arrival_time: " + tokens[4] + ", reservation_time: " + tokens[5]);
+                    System.out.println(", reservation_date: " + tokens[3] + ", arrival_time: " + tokens[4] + ", reservation_time: " + tokens[5]);
 
                     Customer customer = customers.get(tokens[1]);
                     Restaurant restaurant = restaurants.get(tokens[2]);
@@ -71,18 +70,16 @@ public class RestaurantController {
                     LocalTime reservationTime = tokens[5].equals("null") ? null : LocalTime.parse(tokens[5]);
                     LocalTime arrivalTime = LocalTime.parse(tokens[4]);
 
-                    StringBuilder result = new StringBuilder();
                     try {
-                        restaurant.onCustomerArrival(customer, reservationDate, arrivalTime, reservationTime, result);
+                        restaurant.onCustomerArrival(customer, reservationDate, arrivalTime, reservationTime);
                     } catch(NoSpaceException e) {
-                        result.append(IOMessages.SEATS_UNAVAILABLE);
+                        // Although kinda scuffed to catch this message here it makes writing tests easier
+                        System.out.print(IOMessages.getNoSeatsMessage());
                     }
-                    result.append(IOMessages.getCustomerInfoMessage(customer));
-                    System.out.println(result);
+                    System.out.print(IOMessages.getCustomerInfoMessage(customer));
                 } else if (tokens[0].equals("exit")) {
                     System.out.println("stop acknowledged");
                     break;
-
                 } else {
                     System.out.println("command " + tokens[0] + " NOT acknowledged");
                 }
