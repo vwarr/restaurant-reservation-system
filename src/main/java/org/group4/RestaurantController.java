@@ -84,13 +84,12 @@ public class RestaurantController {
         commandLineInput.close();
     }
 
-    private void handleCreateRestaurant(String[] tokens) {
+    private void handleCreateRestaurant(String[] tokens) throws OwnerException.OwnerDoesNotExist {
         Address address = new Address(tokens[3], tokens[4], Integer.parseInt(tokens[5]));
-        // TODO: get owner from tokens
-        // NOTE: For owner doesn't exist errors, handle that here
-        // that has nothing to do with the owner class since we can just check for
-        // the owner's existence in the hashmap that is housed here
-        Owner owner = null;
+        Owner owner = owners.get(tokens[6]);
+        if (owner == null) {
+            throw new OwnerException.OwnerDoesNotExist();
+        }
         Restaurant restaurant = new Restaurant(tokens[1], tokens[2], address, Integer.parseInt(tokens[6]),
                 Boolean.parseBoolean(tokens[7]), Integer.parseInt(tokens[8]), owner);
         System.out.printf("Restaurant created: %s (%s) - %s, %s %s\n", tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]);

@@ -29,6 +29,7 @@ public class Restaurant {
         this.top10 = top10;
         this.owner = owner;
         this.seatingCapacity = seatingCapacity;
+        owner.addOwnedRestaurant(this);
     }
 
     public String getId() {

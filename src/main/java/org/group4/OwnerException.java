@@ -7,4 +7,8 @@ public class OwnerException {
             super("ERROR: duplicate unique identifier");
         }
     }
+
+    public static class OwnerDoesNotExist extends Exception {
+        public OwnerDoesNotExist() { super("ERROR: owner does not exist"); }
+    }
 }
