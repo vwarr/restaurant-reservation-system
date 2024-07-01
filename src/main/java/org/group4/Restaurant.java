@@ -17,13 +17,17 @@ public class Restaurant {
     private boolean top10;
     private final int seatingCapacity;
     private final Map<Reservation.Identifier, Reservation> reservations = new HashMap<>();
+    private final Map<String, RestaurantMenuItem> restaurantMenuItems = new HashMap<>();
+    private final List<String> tags = new ArrayList<>();
+    private final Owner owner;
 
-    public Restaurant(String uniqueId, String name, Address address, int rating, boolean top10, int seatingCapacity) {
+    public Restaurant(String uniqueId, String name, Address address, int rating, boolean top10, int seatingCapacity, Owner owner) {
         this.id = (uniqueId == null) ? UUID.randomUUID().toString() : uniqueId;
         this.name = name;
         this.address = address;
         this.rating = rating;
         this.top10 = top10;
+        this.owner = owner;
         this.seatingCapacity = seatingCapacity;
     }
 
@@ -48,6 +52,7 @@ public class Restaurant {
     }
 
     public void setRating(int rating) {
+        // TODO: use rolling average formula in MenuItem to calculate new rating (average)
         this.rating = rating;
     }
 
@@ -57,6 +62,27 @@ public class Restaurant {
 
     public void setTop10(boolean top10) {
         this.top10 = top10;
+    }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void addMenuItem(MenuItem menuItem, int price) throws MenuItemException.AlreadyAdded {
+        RestaurantMenuItem item = new RestaurantMenuItem(this, menuItem, price);
+        restaurantMenuItems.put(menuItem.getName(), item);
+    }
+
+    public Map<String, RestaurantMenuItem> getRestaurantMenuItems() {
+        return restaurantMenuItems;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void addTag(String tag) {
+        tags.add(tag);
     }
 
     public Reservation makeReservation(Customer customer, int partySize, LocalDateTime reservationDateTime, int credits)
@@ -182,6 +208,7 @@ public class Restaurant {
     public static class Builder {
         private final String id;
         private String name = "Unnamed Restaurant";
+        private Owner owner = new Owner.Builder("SomeOwner").build();
         private Address address = new Address("123", "Unnamed Street", 12345);
         private int rating = 0;
         private boolean top10 = false;
@@ -189,6 +216,11 @@ public class Restaurant {
 
         public Builder(String id) {
             this.id = id;
+        }
+
+        public Builder owner(Owner owner) {
+            this.owner = owner;
+            return this;
         }
 
         public Builder name(String name) {
@@ -217,7 +249,7 @@ public class Restaurant {
         }
 
         public Restaurant build() {
-            return new Restaurant(id, name, address, rating, top10, seatingCapacity);
+            return new Restaurant(id, name, address, rating, top10, seatingCapacity, owner);
         }
     }
 }

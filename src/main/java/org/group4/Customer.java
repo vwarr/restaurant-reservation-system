@@ -1,6 +1,8 @@
 package org.group4;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -92,6 +94,14 @@ public class Customer {
             }
         }
         return false;
+    }
+
+    public void reviewRestaurant(Restaurant restaurant, LocalDate reservationDate, LocalTime reservationTime, int rating, List<String> tags)
+        throws ReservationException.NotSuccessful, ReservationException.DoesNotExist {
+        // TODO: Implement
+        //  update rating of restaurant
+        //  make sure res is valid
+        //  add tags to restaurant
     }
 
     @Override

@@ -1,0 +1,158 @@
+//ERROR: owner doesn't exist
+create_restaurant, REST001, Olive Garden, Homestead, FL, 33071, 7, OWN001, FS526
+
+//create owners
+create_owner, OWN001, Ricardo, Cardenas, Orlando, FL, 32801, 2022-05-30, Restaurant Brands
+create_owner, OWN002, Andrall, Pearson, Louisville, KY, 40213, 2015-07-17, Yum Brands
+create_owner, OWN003, Joshua, Kobza, Toronto, ON, M5X, 2023-05-01, Restaurant Brands
+
+//ERROR: duplicate unique identifier
+create_owner, OWN003, Mark, Moss, Atlanta, GA, 30313, 2023-05-01, Restaurant Brands
+
+
+//create restaurants
+create_restaurant, REST001, Mellow Mushroom, Boca Raton, FL, 33431, 6, OWN001, FS817
+create_restaurant, REST002, Little Caesars, Key West, FL, 30289, 7, OWN001, FS526
+create_restaurant, REST003, Pizza Hut, Buckhead, GA, 30625, 7, OWN002, FS035
+create_restaurant, REST004, Domino’s, Alpharetta, GA, 30504, 7, OWN002, FS182
+create_restaurant, REST005, Papa Johns, San Diego, CA, 94105, 7, OWN003, FS942
+create_restaurant, REST006, Blaze Pizza, San Francisco, CA, 92101, 7, OWN003, FS752
+
+
+//create customers
+create_customer, CUST001, Angel, Cabrera, Miami, FL, 33122, 100
+create_customer, CUST002, Mark, Moss, Atlanta, GA, 30313, 100
+create_customer, CUST003, Neel, Ganediwal, Parkland, FL, 33067, 100
+create_customer, CUST004, Henry, Owen, Chicago, IL, 60629, 100
+create_customer, CUST005, Michael, null, New Orleans, LA, 82402, 100
+
+//ERROR: Menu item doesn't exist
+add_menu_item, cheese pizza, REST001, 8
+
+
+//create menu items
+create_menu_item, cheese pizza, dough:mozzarella:tomato sauce
+create_menu_item, vegetable pizza, dough:mozzarella:olives:mushrooms
+create_menu_item, pepperoni pizza, dough:pork:tomato sauce:paprika
+create_menu_item, hawaiian pizza, dough:pineapple:mozzarella:bacon
+create_menu_item, margherita pizza, dough:mozzarella:tomato sauce
+
+
+//add menu items to restaurants
+add_menu_item, cheese pizza, REST001, 8
+add_menu_item, vegetable pizza, REST001, 13
+add_menu_item, cheese pizza, REST002, 9
+add_menu_item, hawaiian pizza, REST002, 12
+add_menu_item, cheese pizza, REST003, 12
+add_menu_item, vegetable pizza, REST003, 9
+add_menu_item, pepperoni pizza, REST004, 10
+add_menu_item, hawaiian pizza, REST004, 15
+add_menu_item, pepperoni pizza, REST005, 13
+add_menu_item, vegetable pizza, REST005, 14
+add_menu_item, cheese pizza, REST005, 9
+add_menu_item, pepperoni pizza, REST006, 11
+add_menu_item, hawaiian pizza, REST006, 12
+
+//ERROR: Menu Item already added
+add_menu_item, cheese pizza, REST003, 9
+
+// make reservations
+make_reservation, CUST001, REST001, 4, 2024-05-24, 19:00, 80
+make_reservation, CUST002, REST001, 4, 2024-05-24, 19:00, 80
+
+//capacity test for REST001 
+make_reservation, CUST001, REST004, 5, 2024-05-28, 19:00, 50
+make_reservation, CUST002, REST002, 5, 2024-05-23, 19:00, 100
+make_reservation, CUST002, REST004, 4, 2024-05-29, 19:00, 70
+make_reservation, CUST003, REST003, 6, 2024-05-24, 19:00, 70
+make_reservation, CUST003, REST004, 5, 2024-05-25, 19:00, 80
+make_reservation, CUST004, REST005, 4, 2024-05-24, 19:00, 90
+
+//ERROR: request denied as customer has reservation within 2 hours
+make_reservation, CUST001, REST003, 4, 2024-05-24, 17:30, 100
+
+
+//successful 
+customer_arrival, CUST001, REST001, 2024-05-24, 18:50, 19:00
+customer_arrival, CUST001, REST004, 2024-05-28, 18:44, 19:00
+
+//arrived too early
+customer_arrival, CUST002, REST002, 2024-05-23, 18:00, 19:00
+
+//successful 
+customer_arrival, CUST002, REST004, 2024-05-29, 18:58, 19:00
+
+//arrived too late
+customer_arrival, CUST003, REST003, 2024-05-24, 19:30, 19:00
+
+//successful
+customer_arrival, CUST003, REST004, 2024-05-25, 19:05, 19:00
+customer_arrival, CUST004, REST005, 2024-05-24, 19:03, 19:00
+
+//walk-in party
+customer_arrival, CUST004, REST006, 2024-05-23, 19:30, null
+customer_arrival, CUST003, REST006, 2024-05-23, 19:30, null
+
+
+//order menu items 
+order_menu_item, CUST001, REST001, 2024-05-24, 19:00, cheese pizza, 2
+order_menu_item, CUST001, REST001, 2024-05-24, 19:00, vegetable pizza, 1
+order_menu_item, CUST002, REST002, 2024-05-23, 19:00, cheese pizza, 1
+order_menu_item, CUST002, REST002, 2024-05-23, 19:00, hawaiian pizza, 2
+order_menu_item, CUST003, REST004, 2024-05-25, 19:00, pepperoni pizza, 2
+order_menu_item, CUST003, REST004, 2024-05-25, 19:00, hawaiian pizza, 1
+order_menu_item, CUST001, REST004, 2024-05-28, 19:00, hawaiian pizza, 2
+
+
+//3 misses logic - first miss
+make_reservation, CUST001, REST003, 4, 2024-05-29, 19:00, 70
+customer_arrival, CUST001, REST003, 2024-05-29, 19:30, 19:00
+
+//second miss
+make_reservation, CUST001, REST004, 4, 2024-05-30, 19:00, 30
+customer_arrival, CUST001, REST004, 2024-05-30, 19:30, 19:00
+					
+//third miss				
+make_reservation, CUST001, REST005, 4, 2024-05-31, 19:00, 30
+customer_arrival, CUST001, REST005, 2024-05-31, 19:30, 19:00
+
+
+//ERROR: reservation doesn't exist
+customer_review, CUST004, REST006, 2024-05-22, 19:00, 87, lively
+
+//ERROR: reservation not successfully completed
+customer_review, CUST002, REST002, 2024-05-23, 19:00, 33, romantic
+customer_review, CUST003, REST003, 2024-05-24, 19:00, 25, upscale
+
+//customer reviews
+customer_review, CUST003, REST004, 2024-05-25, 19:00, 87, romantic:live music:lively
+customer_review, CUST001, REST004, 2024-05-28, 19:00, 55, vegetarian friendly:sports bar
+customer_review, CUST002, REST004, 2024-05-29, 19:00, 98, downtown:waterfront:upscale
+
+//calculate average price for each menu item
+calculate_average_price, vegetable pizza							
+calculate_average_price, cheese pizza							
+calculate_average_price, hawaiian pizza								
+calculate_average_price, pepperoni pizza							
+
+
+//see how popular an item is
+calculate_item_popularity, cheese pizza								
+calculate_item_popularity, vegetable pizza
+
+//ERROR: item doesn't exist
+calculate_average_price, pineapple pizza							
+
+//ERROR: item never added to a restaurant
+calculate_average_price, margherita pizza
+calculate_item_popularity, margherita pizza							
+
+
+//views
+view_owners, Restaurant Brands
+view_all_restaurants
+view_restaurants_owned, OWN001
+view_all_customers
+view_all_menu_items
+view_ingredients, cheese pizza
+view_menu_items, REST001

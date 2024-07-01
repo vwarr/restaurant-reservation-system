@@ -13,4 +13,16 @@ public class ReservationException {
             super("Restaurant is fully booked at this time");
         }
     }
+
+    public static class DoesNotExist extends Exception {
+        public DoesNotExist() {
+            super("ERROR: Reservation does not exist");
+        }
+    }
+
+    public static class NotSuccessful extends Exception {
+        public NotSuccessful() {
+            super("ERROR: Reservation was not successfully completed");
+        }
+    }
 }

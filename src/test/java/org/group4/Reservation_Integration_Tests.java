@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import static org.group4.Reservation.WALK_IN_PARTY_SIZE;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -72,6 +73,40 @@ public class Reservation_Integration_Tests {
     }
 
     @Test
+    void Reservation_SUCCESS_2hrs_later() {
+        // Arrange
+        Restaurant restaurant = new Restaurant.Builder("R1").seatingCapacity(6).build();
+        Restaurant restaurant2 = new Restaurant.Builder("R2").seatingCapacity(6).build();
+        Customer customer = new Customer.Builder("C2").build();
+
+        LocalDateTime dateTime = LocalDateTime.parse("2024-05-24T19:00:00");
+
+        // Act
+        assertDoesNotThrow(
+                () -> restaurant.makeReservation(customer, 4, dateTime, 80));
+
+        // Assert
+        assertDoesNotThrow(() -> restaurant2.makeReservation(customer, 4, dateTime.plusHours(2), 90));
+    }
+
+    @Test
+    void Reservation_SUCCESS_2hrs_before() {
+        // Arrange
+        Restaurant restaurant = new Restaurant.Builder("R1").seatingCapacity(6).build();
+        Restaurant restaurant2 = new Restaurant.Builder("R2").seatingCapacity(6).build();
+        Customer customer = new Customer.Builder("C2").build();
+
+        LocalDateTime dateTime = LocalDateTime.parse("2024-05-24T19:00:00");
+
+        // Act
+        assertDoesNotThrow(
+                () -> restaurant.makeReservation(customer, 4, dateTime, 80));
+
+        // Assert
+        assertDoesNotThrow(() -> restaurant2.makeReservation(customer, 4, dateTime.minusHours(2), 90));
+    }
+
+    @Test
     void Reservation_FAIL_Invalid_Party_Size() {
         // Arrange
         Restaurant restaurant = new Restaurant.Builder("R1").seatingCapacity(6).build();
@@ -84,7 +119,53 @@ public class Reservation_Integration_Tests {
     }
 
     @Test
-    void Arrival_Late_Add_Miss() {
+    void Arrival_ON_TIME_15min_after() {
+        // Arrange
+        Restaurant restaurant = new Restaurant.Builder("R1").seatingCapacity(6).build();
+        Customer customer = new Customer.Builder("C1").build();
+
+        LocalDateTime dateTime = LocalDateTime.parse("2024-05-24T19:00:00");
+
+        // Act
+        assertDoesNotThrow(
+                () -> restaurant.makeReservation(customer, 4, dateTime, 80));
+        assertDoesNotThrow(
+                () -> restaurant.onCustomerArrival(customer, dateTime.toLocalDate(),
+                        dateTime.toLocalTime().plusMinutes(15), dateTime.toLocalTime()));
+
+        // Assert
+        assertAll(
+                () -> assertEquals(0, customer.getMissedReservations(),
+                        "Missed reservations not updated after missed arrival"),
+                () -> assertEquals(80, customer.getCredits(), "Credits not updated after missed arrival")
+        );
+    }
+
+    @Test
+    void Arrival_ON_TIME_30min_before() {
+        // Arrange
+        Restaurant restaurant = new Restaurant.Builder("R1").seatingCapacity(6).build();
+        Customer customer = new Customer.Builder("C1").build();
+
+        LocalDateTime dateTime = LocalDateTime.parse("2024-05-24T19:00:00");
+
+        // Act
+        assertDoesNotThrow(
+                () -> restaurant.makeReservation(customer, 4, dateTime, 80));
+        assertDoesNotThrow(
+                () -> restaurant.onCustomerArrival(customer, dateTime.toLocalDate(),
+                        dateTime.toLocalTime().minusMinutes(30), dateTime.toLocalTime()));
+
+        // Assert
+        assertAll(
+                () -> assertEquals(0, customer.getMissedReservations(),
+                        "Missed reservations not updated after missed arrival"),
+                () -> assertEquals(80, customer.getCredits(), "Credits not updated after missed arrival")
+        );
+    }
+
+    @Test
+    void Arrival_LATE_Add_Miss() {
         // Arrange
         Restaurant restaurant = new Restaurant.Builder("R1").seatingCapacity(6).build();
         Customer customer = new Customer.Builder("C1").build();
@@ -107,7 +188,7 @@ public class Reservation_Integration_Tests {
     }
 
     @Test
-    void Arrival_Late_3_Misses_Reset() {
+    void Arrival_LATE_3_Misses_Reset() {
         // Arrange
         Restaurant restaurant = new Restaurant.Builder("R1").seatingCapacity(6).build();
         // Start customer with 2 missed reservations already
@@ -133,7 +214,7 @@ public class Reservation_Integration_Tests {
     }
 
     @Test
-    void Arrival_Early() {
+    void Arrival_EARLY_No_Change() {
         // Arrange
         Restaurant restaurant = new Restaurant.Builder("R1").seatingCapacity(6).build();
         Customer customer = new Customer.Builder("C1").build();
@@ -156,7 +237,7 @@ public class Reservation_Integration_Tests {
     }
 
     @Test
-    void Arrival_Walk_In_Success() {
+    void Arrival_WALK_IN_Seated() {
         // Arrange
         Restaurant restaurant = new Restaurant.Builder("R1").seatingCapacity(6).build();
         Customer customer = new Customer.Builder("C1").build();
@@ -168,12 +249,12 @@ public class Reservation_Integration_Tests {
                 () -> restaurant.onCustomerArrival(customer, dateTime.toLocalDate(), dateTime.toLocalTime(), null));
 
         // Assert
-        assertEquals(restaurant.getSeatingCapacity() - 1,
+        assertEquals(restaurant.getSeatingCapacity() - WALK_IN_PARTY_SIZE,
                 restaurant.checkSpace(dateTime), "Restaurant space not updated properly");
     }
 
     @Test
-    void Arrival_Walk_In_FAIL_No_Seats() {
+    void Arrival_WALK_IN_No_Seats() {
         final int MAX_SEATS = 4;
 
         // Arrange
@@ -197,7 +278,7 @@ public class Reservation_Integration_Tests {
     }
 
     @Test
-    void Arrival_Late_FAIL_No_Seats() {
+    void Arrival_LATE_No_Seats() {
         final int MAX_SEATS = 4;
 
         // Arrange
