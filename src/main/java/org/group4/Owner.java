@@ -12,11 +12,11 @@ public class Owner implements Person {
     private final String lastName;
     private final Address address;
     private final LocalDate startDate;
-    private final List<License> licenses;
     private final String restaurantGroup;
     private final HashMap<String, Restaurant> ownedRestaurants = new HashMap<>();
+    private HashMap<String, License> licenses = new HashMap<>();
 
-    public Owner(LocalDate startDate, List<License> licenses, String uniqueId, String firstName, String lastName,
+    public Owner(LocalDate startDate, HashMap<String, License> licenses, String uniqueId, String firstName, String lastName,
                  Address address, String restaurantGroup) {
         this.id = (uniqueId == null) ? UUID.randomUUID().toString() : uniqueId;
         this.startDate = startDate;
@@ -35,12 +35,12 @@ public class Owner implements Person {
         return startDate;
     }
 
-    public List<License> getLicenses() {
+    public HashMap<String, License> getLicenses() {
         return licenses;
     }
 
-    public void addLicense(License license) {
-        this.licenses.add(license);
+    public void addLicense(String id, License license) {
+        this.licenses.put(id, license);
     }
 
     public String getId() {
@@ -70,7 +70,7 @@ public class Owner implements Person {
         private String lastName = "Guy";
         private Address address = new Address("123", "Unnamed Street", 12345);
         private LocalDate startDate = LocalDate.parse("2024-06-05");
-        private List<License> licenses = new ArrayList<>();
+        private HashMap<String, License> licenses = new HashMap<>();
 
         private String restaurantGroup = "Unnamed Group";
 
@@ -78,7 +78,7 @@ public class Owner implements Person {
             this.id = id;
         }
 
-        public Builder setLicenses(List<License> licenses) {
+        public Builder setLicenses(HashMap<String, License> licenses) {
             this.licenses = licenses;
             return this;
         }

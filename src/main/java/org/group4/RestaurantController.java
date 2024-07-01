@@ -84,16 +84,20 @@ public class RestaurantController {
         commandLineInput.close();
     }
 
-    private void handleCreateRestaurant(String[] tokens) throws OwnerException.OwnerDoesNotExist {
-        Address address = new Address(tokens[3], tokens[4], Integer.parseInt(tokens[5]));
-        Owner owner = owners.get(tokens[6]);
+    private void handleCreateRestaurant(String[] tokens) {
+        Address address = new Address(tokens[3], tokens[4], Integer.parseInt(tokens[5].trim()));
+        Owner owner = owners.get(tokens[7]);
         if (owner == null) {
-            throw new OwnerException.OwnerDoesNotExist();
+            // idk why but printing "ERROR: " before the statement causes the loop to terminate
+            System.out.printf("owner doesn't exist\n");
+        } else {
+            License license = new License(tokens[7], tokens[1], tokens[8]);
+            owner.addLicense(tokens[1], license);
+            Restaurant restaurant = new Restaurant(tokens[1], tokens[2], address, -1,
+                    false, Integer.parseInt(tokens[6]), owner);
+            System.out.printf("Restaurant created: %s (%s) - %s, %s %s\n", tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]);
+            restaurants.put(restaurant.getId(), restaurant);
         }
-        Restaurant restaurant = new Restaurant(tokens[1], tokens[2], address, Integer.parseInt(tokens[6]),
-                Boolean.parseBoolean(tokens[7]), Integer.parseInt(tokens[8]), owner);
-        System.out.printf("Restaurant created: %s (%s) - %s, %s %s\n", tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]);
-        restaurants.put(restaurant.getId(), restaurant);
     }
 
     private void handleCreateCustomer(String[] tokens) {
