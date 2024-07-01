@@ -1,7 +1,5 @@
-package org.group4;
-
-class NoSpaceException extends RuntimeException {
+package org.group4;public class NoSpaceException extends Exception {
     public NoSpaceException() {
-        super("Restaurant has no space.");
+        super("Restaurant has no space right now");
     }
 }
