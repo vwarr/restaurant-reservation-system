@@ -2,6 +2,7 @@ package org.group4;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,28 +12,35 @@ public class Owner implements Person {
     private final String lastName;
     private final Address address;
     private final LocalDate startDate;
-    private final List<License> licenses;
+    private final String restaurantGroup;
+    private final HashMap<String, Restaurant> ownedRestaurants = new HashMap<>();
+    private HashMap<String, License> licenses = new HashMap<>();
 
-    public Owner(LocalDate startDate, List<License> licenses, String uniqueId, String firstName, String lastName,
-                 Address address) {
+    public Owner(LocalDate startDate, HashMap<String, License> licenses, String uniqueId, String firstName, String lastName,
+                 Address address, String restaurantGroup) {
         this.id = (uniqueId == null) ? UUID.randomUUID().toString() : uniqueId;
         this.startDate = startDate;
         this.licenses = licenses;
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
+        this.restaurantGroup = restaurantGroup;
+    }
+
+    public void addOwnedRestaurant(Restaurant restaurant) {
+        ownedRestaurants.put(restaurant.getId(), restaurant);
     }
 
     public LocalDate getStartDate() {
         return startDate;
     }
 
-    public List<License> getLicenses() {
+    public HashMap<String, License> getLicenses() {
         return licenses;
     }
 
-    public void addLicense(License license) {
-        this.licenses.add(license);
+    public void addLicense(String id, License license) {
+        this.licenses.put(id, license);
     }
 
     public String getId() {
@@ -54,19 +62,23 @@ public class Owner implements Person {
         return address;
     }
 
+    public String getRestaurantGroup() {return restaurantGroup; }
+
     public static class Builder {
         private String id;
         private String firstName = "Unnamed Owner";
         private String lastName = "Guy";
         private Address address = new Address("123", "Unnamed Street", 12345);
         private LocalDate startDate = LocalDate.parse("2024-06-05");
-        private List<License> licenses = new ArrayList<>();
+        private HashMap<String, License> licenses = new HashMap<>();
+
+        private String restaurantGroup = "Unnamed Group";
 
         public Builder(String id) {
             this.id = id;
         }
 
-        public Builder setLicenses(List<License> licenses) {
+        public Builder setLicenses(HashMap<String, License> licenses) {
             this.licenses = licenses;
             return this;
         }
@@ -91,8 +103,13 @@ public class Owner implements Person {
             return this;
         }
 
+        public Builder restaurantGroup(String restaurantGroup) {
+            this.restaurantGroup = restaurantGroup;
+            return this;
+        }
+
         public Owner build() {
-            return new Owner(startDate, licenses, id, firstName, lastName, address);
+            return new Owner(startDate, licenses, id, firstName, lastName, address, restaurantGroup);
         }
     }
 }
