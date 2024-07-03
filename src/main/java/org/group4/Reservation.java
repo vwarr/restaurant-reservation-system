@@ -15,6 +15,7 @@ public class Reservation {
     private Map<MenuItem, Integer> orderItems = new HashMap<>();
 
     private int bill;
+    private int lastOrderPrice;
 
     public static final int RESERVATION_DURATION = 2;
     public static final int WALK_IN_PARTY_SIZE = 4;
@@ -26,6 +27,15 @@ public class Reservation {
         this.endTime = dateTime.plusHours(2);
         this.credits = credits;
         this.bill = 0;
+        this.lastOrderPrice = 0;
+    }
+
+    public int getLastOrderPrice() {
+        return lastOrderPrice;
+    }
+
+    public void setLastOrderPrice(int lastOrderPrice) {
+        this.lastOrderPrice = lastOrderPrice;
     }
 
     public void addOrderItem(MenuItem item, int quantity) {

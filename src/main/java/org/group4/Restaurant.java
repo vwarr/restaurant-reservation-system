@@ -200,20 +200,28 @@ public class Restaurant {
         return seatingCapacity - usedSeats;
     }
 
-    public boolean orderItem(Customer customer, LocalDate reservationDate, LocalTime reservationTime, MenuItem item, int quantity) {
+    public Reservation orderItem(Customer customer, LocalDate reservationDate, LocalTime reservationTime, MenuItem item, int quantity)
+        throws ReservationException.DoesNotExist, OrderFoodException.NotInRestaurant, OrderFoodException.InsufficientCredits{
         LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, reservationTime);
         Reservation reservation = reservations.get(new Reservation.Identifier(customer, reservationDateTime));
-        int orderCost = restaurantMenuItems.get(item.getName()).getPrice() * quantity;
-        if (customer.getCredits() < orderCost) {
-            return false;
+        int orderCost = 0;
+        if (restaurantMenuItems.get(item.getName()) == null) {
+            throw new OrderFoodException.NotInRestaurant();
+        } else {
+            orderCost = restaurantMenuItems.get(item.getName()).getPrice() * quantity;
         }
+        if (customer.getCredits() < orderCost) {
+            throw new OrderFoodException.InsufficientCredits();
+        }
+        //Update the reservation lastOrderPrice variable
+        reservation.setLastOrderPrice(orderCost);
         //Update the bill of the reservation
         reservation.updateBill(orderCost, quantity);
         //Update the order items of the reservation
         reservation.addOrderItem(item, quantity);
         //Update the revenue of the restaurant
         revenue += orderCost;
-        return true;
+        return reservation;
     }
 
     public int getReservationBill(Customer customer, LocalDate reservationDate, LocalTime reservationTime) {

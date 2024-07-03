@@ -168,17 +168,20 @@ public class RestaurantController {
         MenuItem menuItem = menuItems.get(tokens[5]);
         int quantity = Integer.parseInt(tokens[6]);
 
-        boolean success = restaurant.orderItem(customer, reservationDate, reservationTime, menuItem, quantity);
-        if (success) {
-            int totalPrice = restaurant.getRestaurantMenuItems().get(menuItem.getName()).getPrice() * quantity;
-            int reservationBill = restaurant.getReservationBill(customer, reservationDate, reservationTime);
+        try {
+            Reservation reservation = restaurant.orderItem(customer, reservationDate, reservationTime, menuItem, quantity);
+            // int totalPrice = restaurant.getRestaurantMenuItems().get(menuItem.getName()).getPrice() * quantity;
             System.out.println("Menu item successfully ordered");
-            System.out.printf("Total Price for ordered amount: %d\n", totalPrice);
-            System.out.printf("%s updated bill: %d\n", customer.getId(), reservationBill);
+            System.out.printf("Total Price for ordered amount: %d\n", reservation.getLastOrderPrice());
+            System.out.printf("%s updated bill: %d\n", customer.getId(), reservation.getBill());
             System.out.printf("%s updated funds: %d\n", customer.getId(), customer.getCredits());
             System.out.printf("%s total revenue from all reservations: %d\n", restaurant.getId(), restaurant.getRevenue());
-        } else {
-            System.out.printf("Order failed for %d %s(s) by %s %s at %s due to insufficient credits\n", quantity, menuItem.getName(), customer.getFirstName(), customer.getLastName(), restaurant.getName());
+        } catch (ReservationException.DoesNotExist e) {
+            System.out.printf("Order failed: Reservation does not exist for %s %s at %s\n", customer.getFirstName(), customer.getLastName(), restaurant.getName());
+        } catch (OrderFoodException.NotInRestaurant e) {
+            System.out.printf("Order failed: Item is not in the restaurant\n");
+        } catch (OrderFoodException.InsufficientCredits e) {
+            System.out.printf("Order failed: Insufficient credits\n");
         }
     }
 
