@@ -1,19 +1,22 @@
 package org.group4;
 
-import java.time.Duration;
+import org.group4.Exceptions.MenuItemException;
+import org.group4.Exceptions.NoSpaceException;
+import org.group4.Exceptions.ReservationException;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
-import static org.group4.Reservation.RESERVATION_DURATION;
 import static org.group4.Reservation.WALK_IN_PARTY_SIZE;
 
 public class Restaurant {
     private final String id;
     private final String name;
     private final Address address;
-    private int rating;
+    private int rating = 0;
+    private int numRatings = 0;
     private boolean top10;
     private final int seatingCapacity;
     private final Map<Reservation.Identifier, Reservation> reservations = new HashMap<>();
@@ -52,9 +55,9 @@ public class Restaurant {
         return rating;
     }
 
-    public void setRating(int rating) {
-        // TODO: use rolling average formula in MenuItem to calculate new rating (average)
-        this.rating = rating;
+    public void addRating(int newRating) {
+        this.rating = (this.rating * numRatings + newRating) / numRatings + 1;
+        numRatings++;
     }
 
     public boolean isTop10() {
@@ -71,6 +74,9 @@ public class Restaurant {
 
     public void addMenuItem(MenuItem menuItem, int price) throws MenuItemException.AlreadyAdded {
         RestaurantMenuItem item = new RestaurantMenuItem(this, menuItem, price);
+        if (restaurantMenuItems.containsKey(menuItem.getName())) {
+            throw new MenuItemException.AlreadyAdded();
+        }
         restaurantMenuItems.put(menuItem.getName(), item);
     }
 

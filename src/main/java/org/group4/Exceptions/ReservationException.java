@@ -1,4 +1,6 @@
-package org.group4;
+package org.group4.Exceptions;
+
+import org.group4.Reservation;
 
 public class ReservationException {
 

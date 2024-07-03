@@ -1,5 +1,7 @@
 package org.group4;
 
+import org.group4.Exceptions.MenuItemException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +14,7 @@ public class MenuItem {
     public MenuItem(String name, String[] ingredients) {
         this.name = name;
         this.ingredients = ingredients;
-        offeredAt = new ArrayList<>();
+        this.offeredAt = new ArrayList<>();
     }
 
     public String getName() {
@@ -27,11 +29,10 @@ public class MenuItem {
         return offeredAt;
     }
 
+    // TODO: test this, I generated it with AI
     public void addOfferingRestaurant(Restaurant restaurant, int price) {
         this.offeredAt.add(restaurant);
-        // (current_average * n + new_item) / (n + 1)
         int n = offeredAt.size();
-        // TODO: test this, I generated it with AI
         this.averagePrice = (this.averagePrice * n + price) / (n + 1);
     }
 

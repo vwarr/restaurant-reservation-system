@@ -1,5 +1,7 @@
 package org.group4;
 
+import org.group4.Exceptions.NoSpaceException;
+import org.group4.Exceptions.ReservationException;
 import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;

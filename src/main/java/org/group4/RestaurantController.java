@@ -1,12 +1,13 @@
 package org.group4;
 
 
-import java.awt.*;
+import org.group4.Exceptions.NoSpaceException;
+import org.group4.Exceptions.ReservationException;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.List;
 
 public class RestaurantController {
     private final HashMap<String, Restaurant> restaurants = new HashMap<>();
