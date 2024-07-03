@@ -20,6 +20,7 @@ public class Restaurant {
     private final Map<String, RestaurantMenuItem> restaurantMenuItems = new HashMap<>();
     private final List<String> tags = new ArrayList<>();
     private final Owner owner;
+    private int revenue;
 
     public Restaurant(String uniqueId, String name, Address address, int rating, boolean top10, int seatingCapacity, Owner owner) {
         this.id = (uniqueId == null) ? UUID.randomUUID().toString() : uniqueId;
@@ -30,6 +31,11 @@ public class Restaurant {
         this.owner = owner;
         this.seatingCapacity = seatingCapacity;
         owner.addOwnedRestaurant(this);
+        this.revenue = 0;
+    }
+
+    public int getRevenue() {
+        return revenue;
     }
 
     public String getId() {
@@ -192,6 +198,28 @@ public class Restaurant {
             }
         }
         return seatingCapacity - usedSeats;
+    }
+
+    public boolean orderItem(Customer customer, LocalDate reservationDate, LocalTime reservationTime, MenuItem item, int quantity) {
+        LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, reservationTime);
+        Reservation reservation = reservations.get(new Reservation.Identifier(customer, reservationDateTime));
+        int orderCost = restaurantMenuItems.get(item.getName()).getPrice() * quantity;
+        if (customer.getCredits() < orderCost) {
+            return false;
+        }
+        //Update the bill of the reservation
+        reservation.updateBill(orderCost, quantity);
+        //Update the order items of the reservation
+        reservation.addOrderItem(item, quantity);
+        //Update the revenue of the restaurant
+        revenue += orderCost;
+        return true;
+    }
+
+    public int getReservationBill(Customer customer, LocalDate reservationDate, LocalTime reservationTime) {
+        LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, reservationTime);
+        Reservation reservation = reservations.get(new Reservation.Identifier(customer, reservationDateTime));
+        return reservation.getBill();
     }
 
     @Override
