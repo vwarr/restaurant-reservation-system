@@ -5,21 +5,21 @@ import java.util.List;
 
 public class MenuItem {
     private final String name;
-    private final List<String> ingredients;
+    private final String[] ingredients;
     private final List<Restaurant> offeredAt;
     private int averagePrice = 0;
 
-    public MenuItem(String name, List<String> ingredients, List<Restaurant> offeredAt) {
+    public MenuItem(String name, String[] ingredients) {
         this.name = name;
         this.ingredients = ingredients;
-        this.offeredAt = offeredAt;
+        offeredAt = new ArrayList<>();
     }
 
     public String getName() {
         return name;
     }
 
-    public List<String> getIngredients() {
+    public String[] getIngredients() {
         return ingredients;
     }
 
@@ -52,7 +52,7 @@ public class MenuItem {
 
     public static class Builder {
         private String name;
-        private List<String> ingredients = new ArrayList<>();
+        private String[] ingredients;
         private final List<Restaurant> offeredAt = new ArrayList<>();
         private int averagePrice = 0;
 
@@ -60,7 +60,7 @@ public class MenuItem {
             this.name = name;
         }
 
-        public Builder ingredients(List<String> ingredients) {
+        public Builder ingredients(String[] ingredients) {
             this.ingredients = ingredients;
             return this;
         }
@@ -71,7 +71,7 @@ public class MenuItem {
         }
 
         public MenuItem build() {
-            return new MenuItem(name, ingredients, offeredAt);
+            return new MenuItem(name, ingredients);
         }
     }
 }

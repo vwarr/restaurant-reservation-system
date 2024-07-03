@@ -1,12 +1,12 @@
 package org.group4;
 
 
+import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Scanner;
+import java.util.*;
+import java.util.List;
 
 public class RestaurantController {
     private final HashMap<String, Restaurant> restaurants = new HashMap<>();
@@ -158,6 +158,10 @@ public class RestaurantController {
 
     private void handleCreateMenuItem(String[] tokens) {
         // TODO: implement
+        String name = tokens[1];
+        String[] ingredients = tokens[2].split(":");
+        MenuItem menuItem = new MenuItem(name, ingredients);
+        System.out.printf("%s created\n", name);
     }
 
     private void handleOrderMenuItem(String[] tokens) {
@@ -178,6 +182,11 @@ public class RestaurantController {
 
     private void handleViewAllRestaurants(String[] tokens) {
         // TODO: implement
+        for (Restaurant restaurant : restaurants.values()) {
+            String id = restaurant.getId();
+            String name = restaurant.getName();
+            System.out.printf("%s (%s)\n", id, name);
+        }
     }
 
     private void handleViewAllCustomers(String[] tokens) {
@@ -186,6 +195,10 @@ public class RestaurantController {
 
     private void handleViewAllMenuItems(String[] tokens) {
         // TODO: implement
+        for (MenuItem menuItem : menuItems.values()) {
+            String itemName = menuItem.getName();
+            System.out.println(itemName);
+        }
     }
 
     private void handleViewIngredients(String[] tokens) {
