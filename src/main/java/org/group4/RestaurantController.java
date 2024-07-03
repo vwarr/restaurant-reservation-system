@@ -1,6 +1,7 @@
 package org.group4;
 
 
+import org.group4.Exceptions.MenuItemException;
 import org.group4.Exceptions.NoSpaceException;
 import org.group4.Exceptions.ReservationException;
 
@@ -174,7 +175,17 @@ public class RestaurantController {
     }
 
     private void handleCalculateAveragePrice(String[] tokens) {
-        // TODO: implement
+        MenuItem item = menuItems.get(tokens[1]);
+        if (item == null) {
+            System.out.printf("ERROR: item doesn't exist");
+            return;
+        }
+        try {
+            int price = item.getAveragePrice();
+            System.out.printf("Average price for %s: $%f", item.getName(), price);
+        } catch (MenuItemException.NeverAdded e) {
+            System.out.printf("ERROR: item was never added to a restaurant");
+        }
     }
 
     private void handleViewOwners(String[] tokens) {
