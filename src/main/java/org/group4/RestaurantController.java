@@ -192,6 +192,12 @@ public class RestaurantController {
 
     private void handleViewAllCustomers(String[] tokens) {
         // TODO: implement
+        for (Customer customer : customers.values()) {
+            String id = customer.getId();
+            String firstName = customer.getFirstName();
+            String lastName = customer.getLastName();
+            System.out.printf("%s (%s %s)", id, firstName, lastName);
+        }
     }
 
     private void handleViewAllMenuItems(String[] tokens) {
@@ -204,6 +210,16 @@ public class RestaurantController {
 
     private void handleViewIngredients(String[] tokens) {
         // TODO: implement
+        MenuItem menuItem = menuItems.get(tokens[1]);
+        String[] ingredientArray = menuItem.getIngredients();
+        String ingredients = "Ingredients: ";
+        for (int i = 0; i < ingredientArray.length; i++) {
+            if (i == ingredientArray.length - 1) {
+                ingredients = ingredients + ingredientArray[i];
+            }
+            ingredients = ingredients + ingredientArray[i] + ", ";
+        }
+        System.out.println(ingredients);
     }
 
     private void handleViewMenuItems(String[] tokens) {
