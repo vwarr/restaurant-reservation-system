@@ -16,11 +16,10 @@ public class Owner implements Person {
     private final HashMap<String, Restaurant> ownedRestaurants = new HashMap<>();
     private HashMap<String, License> licenses = new HashMap<>();
 
-    public Owner(LocalDate startDate, HashMap<String, License> licenses, String uniqueId, String firstName, String lastName,
+    public Owner(LocalDate startDate, String uniqueId, String firstName, String lastName,
                  Address address, String restaurantGroup) {
         this.id = (uniqueId == null) ? UUID.randomUUID().toString() : uniqueId;
         this.startDate = startDate;
-        this.licenses = licenses;
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -38,6 +37,7 @@ public class Owner implements Person {
     public HashMap<String, License> getLicenses() {
         return licenses;
     }
+    public HashMap<String, Restaurant> getOwnedRestaurants() { return ownedRestaurants; }
 
     public void addLicense(String id, License license) {
         this.licenses.put(id, license);
@@ -109,7 +109,7 @@ public class Owner implements Person {
         }
 
         public Owner build() {
-            return new Owner(startDate, licenses, id, firstName, lastName, address, restaurantGroup);
+            return new Owner(startDate, id, firstName, lastName, address, restaurantGroup);
         }
     }
 }
