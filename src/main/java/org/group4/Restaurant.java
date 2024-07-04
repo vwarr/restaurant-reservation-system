@@ -231,7 +231,8 @@ public class Restaurant {
         }
         if (customer.getCredits() < orderCost) {
             throw new OrderFoodException.InsufficientCredits();
-        }
+        } 
+        customer.setCredits(customer.getCredits() - orderCost);
         //Update the reservation lastOrderPrice variable
         reservation.setLastOrderPrice(orderCost);
         //Update the bill of the reservation
