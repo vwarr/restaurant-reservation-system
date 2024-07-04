@@ -14,11 +14,13 @@ public class Restaurant {
     private final String name;
     private final Address address;
     private int rating;
+    private int reviewCount;
     private boolean top10;
     private final int seatingCapacity;
     private final Map<Reservation.Identifier, Reservation> reservations = new HashMap<>();
     private final Map<String, RestaurantMenuItem> restaurantMenuItems = new HashMap<>();
-    private final List<String> tags = new ArrayList<>();
+    // private final List<String> tags = new ArrayList<>();
+    private final Set<String> tags = new HashSet<>();
     private final Owner owner;
     private int revenue;
 
@@ -32,7 +34,10 @@ public class Restaurant {
         this.seatingCapacity = seatingCapacity;
         owner.addOwnedRestaurant(this);
         this.revenue = 0;
+        this.reviewCount = 0;
     }
+
+
 
     public int getRevenue() {
         return revenue;
@@ -58,9 +63,10 @@ public class Restaurant {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void updateRating(int rating) {
         // TODO: use rolling average formula in MenuItem to calculate new rating (average)
-        this.rating = rating;
+        this.rating = (this.rating * this.reviewCount + rating) / (this.reviewCount + 1);
+        this.reviewCount++;
     }
 
     public boolean isTop10() {
@@ -84,13 +90,23 @@ public class Restaurant {
         return restaurantMenuItems;
     }
 
-    public List<String> getTags() {
+    public Set<String> getTags() {
         return tags;
     }
 
     public void addTag(String tag) {
         tags.add(tag);
     }
+
+    public Reservation checkReservation(Customer customer, LocalDate reservationDate, LocalTime reservationTime) 
+        throws ReservationException.DoesNotExist {
+            LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, reservationTime);
+            Reservation reservation = reservations.get(new Reservation.Identifier(customer, reservationDateTime));
+            if (reservation == null) {
+                throw new ReservationException.DoesNotExist();
+            }
+            return reservation;
+        }
 
     public Reservation makeReservation(Customer customer, int partySize, LocalDateTime reservationDateTime, int credits)
             throws ReservationException.FullyBooked, ReservationException.Conflict {
@@ -204,6 +220,9 @@ public class Restaurant {
         throws ReservationException.DoesNotExist, OrderFoodException.NotInRestaurant, OrderFoodException.InsufficientCredits{
         LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, reservationTime);
         Reservation reservation = reservations.get(new Reservation.Identifier(customer, reservationDateTime));
+        if (reservation == null) {
+            throw new ReservationException.DoesNotExist();
+        }
         int orderCost = 0;
         if (restaurantMenuItems.get(item.getName()) == null) {
             throw new OrderFoodException.NotInRestaurant();
