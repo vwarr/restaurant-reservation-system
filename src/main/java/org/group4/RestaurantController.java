@@ -7,6 +7,8 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Arrays;
+import java.util.List;
 
 public class RestaurantController {
     private final HashMap<String, Restaurant> restaurants = new HashMap<>();
@@ -171,11 +173,52 @@ public class RestaurantController {
     }
 
     private void handleOrderMenuItem(String[] tokens) {
-        // TODO: implement
+        Customer customer = customers.get(tokens[1]);
+        Restaurant restaurant = restaurants.get(tokens[2]);
+        LocalDate reservationDate = LocalDate.parse(tokens[3]);
+        LocalTime reservationTime = LocalTime.parse(tokens[4]);
+        MenuItem menuItem = menuItems.get(tokens[5]);
+        int quantity = Integer.parseInt(tokens[6]);
+
+        try {
+            Reservation reservation = restaurant.orderItem(customer, reservationDate, reservationTime, menuItem, quantity);
+            // int totalPrice = restaurant.getRestaurantMenuItems().get(menuItem.getName()).getPrice() * quantity;
+            System.out.println("Menu item successfully ordered");
+            System.out.printf("Total Price for ordered amount: %d\n", reservation.getLastOrderPrice());
+            System.out.printf("%s updated bill: %d\n", customer.getId(), reservation.getBill());
+            System.out.printf("%s updated funds: %d\n", customer.getId(), customer.getCredits());
+            System.out.printf("%s total revenue from all reservations: %d\n", restaurant.getId(), restaurant.getRevenue());
+        } catch (ReservationException.DoesNotExist e) {
+            System.out.printf("Order failed: Reservation does not exist for %s %s at %s\n", customer.getFirstName(), customer.getLastName(), restaurant.getName());
+        } catch (OrderFoodException.NotInRestaurant e) {
+            System.out.printf("Order failed: Item is not in the restaurant\n");
+        } catch (OrderFoodException.InsufficientCredits e) {
+            System.out.printf("Order failed: Insufficient credits\n");
+        }
     }
 
     private void handleCustomerReview(String[] tokens) {
         // TODO: implement
+        Customer customer = customers.get(tokens[1]);
+        Restaurant restaurant = restaurants.get(tokens[2]);
+        LocalDate reservationDate = LocalDate.parse(tokens[3]);
+        LocalTime reservationTime = LocalTime.parse(tokens[4]);
+        int rating = Integer.parseInt(tokens[5]);
+        List<String> tags = Arrays.asList(tokens[6].split(" "));
+        try {
+            customer.reviewRestaurant(restaurant, reservationDate, reservationTime, rating, tags);
+        System.out.printf("%s (%s) rating for this reservation: %d\n", restaurant.getId(), restaurant.getName(), rating);
+        System.out.printf("%s (%s) average rating: %d\n", restaurant.getId(), restaurant.getName(), restaurant.getRating());
+        System.out.print("Tags: ");
+        for (String tag : restaurant.getTags()) {
+            System.out.print(tag + ", ");
+        }
+        System.out.println();
+        } catch (ReservationException.DoesNotExist e) {
+            System.out.printf("ERROR: reservation doesn't exist");
+        } catch (ReservationException.NotSuccessful e) {
+            System.out.printf("ERROR: reservation wasn't successfully completed");
+        }
     }
 
     private void handleCalculateAveragePrice(String[] tokens) {
