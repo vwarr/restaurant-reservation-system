@@ -8,11 +8,7 @@ import org.group4.Exceptions.ReservationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class RestaurantController {
     private final HashMap<String, Restaurant> restaurants = new HashMap<>();
