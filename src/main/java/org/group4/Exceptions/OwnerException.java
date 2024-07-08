@@ -1,4 +1,4 @@
-package org.group4;
+package org.group4.Exceptions;
 
 public class OwnerException {
 

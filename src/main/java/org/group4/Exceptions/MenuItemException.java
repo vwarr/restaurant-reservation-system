@@ -1,4 +1,4 @@
-package org.group4;
+package org.group4.Exceptions;
 
 /**
  * When you are dealing with a nonexistent item, handle that in the input loop

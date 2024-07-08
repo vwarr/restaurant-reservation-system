@@ -1,5 +1,9 @@
 package org.group4;
 
+import org.group4.Exceptions.MenuItemException;
+import org.group4.Exceptions.NoSpaceException;
+import org.group4.Exceptions.ReservationException;
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,6 +28,7 @@ public class Restaurant {
     private final Owner owner;
     private int revenue;
 
+
     public Restaurant(String uniqueId, String name, Address address, int rating, boolean top10, int seatingCapacity, Owner owner) {
         this.id = (uniqueId == null) ? UUID.randomUUID().toString() : uniqueId;
         this.name = name;
@@ -36,8 +41,6 @@ public class Restaurant {
         this.revenue = 0;
         this.reviewCount = 0;
     }
-
-
 
     public int getRevenue() {
         return revenue;
@@ -62,6 +65,8 @@ public class Restaurant {
     public int getRating() {
         return rating;
     }
+
+
 
     public void updateRating(int rating) {
         // TODO: use rolling average formula in MenuItem to calculate new rating (average)
@@ -98,15 +103,15 @@ public class Restaurant {
         tags.add(tag);
     }
 
-    public Reservation checkReservation(Customer customer, LocalDate reservationDate, LocalTime reservationTime) 
-        throws ReservationException.DoesNotExist {
-            LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, reservationTime);
-            Reservation reservation = reservations.get(new Reservation.Identifier(customer, reservationDateTime));
-            if (reservation == null) {
-                throw new ReservationException.DoesNotExist();
-            }
-            return reservation;
+    public Reservation checkReservation(Customer customer, LocalDate reservationDate, LocalTime reservationTime)
+            throws ReservationException.DoesNotExist {
+        LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, reservationTime);
+        Reservation reservation = reservations.get(new Reservation.Identifier(customer, reservationDateTime));
+        if (reservation == null) {
+            throw new ReservationException.DoesNotExist();
         }
+        return reservation;
+    }
 
     public Reservation makeReservation(Customer customer, int partySize, LocalDateTime reservationDateTime, int credits)
             throws ReservationException.FullyBooked, ReservationException.Conflict {
@@ -126,6 +131,40 @@ public class Restaurant {
         return reservation;
     }
 
+    public Reservation orderItem(Customer customer, LocalDate reservationDate, LocalTime reservationTime, MenuItem item, int quantity)
+            throws ReservationException.DoesNotExist, OrderFoodException.NotInRestaurant, OrderFoodException.InsufficientCredits{
+        LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, reservationTime);
+        Reservation reservation = reservations.get(new Reservation.Identifier(customer, reservationDateTime));
+        if (reservation == null) {
+            throw new ReservationException.DoesNotExist();
+        }
+        int orderCost = 0;
+        if (restaurantMenuItems.get(item.getName()) == null) {
+            throw new OrderFoodException.NotInRestaurant();
+        } else {
+            orderCost = restaurantMenuItems.get(item.getName()).getPrice() * quantity;
+        }
+        if (customer.getCredits() < orderCost) {
+            throw new OrderFoodException.InsufficientCredits();
+        }
+        customer.setCredits(customer.getCredits() - orderCost);
+        //Update the reservation lastOrderPrice variable
+        reservation.setLastOrderPrice(orderCost);
+        //Update the bill of the reservation
+        reservation.updateBill(orderCost, quantity);
+        //Update the order items of the reservation
+        reservation.addOrderItem(item, quantity);
+        //Update the revenue of the restaurant
+        revenue += orderCost;
+        return reservation;
+    }
+
+    public int getReservationBill(Customer customer, LocalDate reservationDate, LocalTime reservationTime) {
+        LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, reservationTime);
+        Reservation reservation = reservations.get(new Reservation.Identifier(customer, reservationDateTime));
+        return reservation.getBill();
+    }
+
     /**
      * Overload for the customer arrival method primarily for use in tests as you don't need the string builder
      * @param customer the customer
@@ -135,7 +174,7 @@ public class Restaurant {
      * @throws NoSpaceException if there are no seats for a late or walk in party
      */
     public void onCustomerArrival(Customer customer, LocalDate reservationDate, LocalTime arrivalTime,
-                                           LocalTime reservationTime) throws NoSpaceException {
+                                               LocalTime reservationTime) throws NoSpaceException {
         ArrivalStatus status = getArrivalStatus(customer, reservationDate, arrivalTime, reservationTime);
 
         System.out.print(IOMessages.getArrivalStatusMessage(status, customer, this));
@@ -214,40 +253,6 @@ public class Restaurant {
             }
         }
         return seatingCapacity - usedSeats;
-    }
-
-    public Reservation orderItem(Customer customer, LocalDate reservationDate, LocalTime reservationTime, MenuItem item, int quantity)
-        throws ReservationException.DoesNotExist, OrderFoodException.NotInRestaurant, OrderFoodException.InsufficientCredits{
-        LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, reservationTime);
-        Reservation reservation = reservations.get(new Reservation.Identifier(customer, reservationDateTime));
-        if (reservation == null) {
-            throw new ReservationException.DoesNotExist();
-        }
-        int orderCost = 0;
-        if (restaurantMenuItems.get(item.getName()) == null) {
-            throw new OrderFoodException.NotInRestaurant();
-        } else {
-            orderCost = restaurantMenuItems.get(item.getName()).getPrice() * quantity;
-        }
-        if (customer.getCredits() < orderCost) {
-            throw new OrderFoodException.InsufficientCredits();
-        } 
-        customer.setCredits(customer.getCredits() - orderCost);
-        //Update the reservation lastOrderPrice variable
-        reservation.setLastOrderPrice(orderCost);
-        //Update the bill of the reservation
-        reservation.updateBill(orderCost, quantity);
-        //Update the order items of the reservation
-        reservation.addOrderItem(item, quantity);
-        //Update the revenue of the restaurant
-        revenue += orderCost;
-        return reservation;
-    }
-
-    public int getReservationBill(Customer customer, LocalDate reservationDate, LocalTime reservationTime) {
-        LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, reservationTime);
-        Reservation reservation = reservations.get(new Reservation.Identifier(customer, reservationDateTime));
-        return reservation.getBill();
     }
 
     @Override

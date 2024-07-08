@@ -1,5 +1,7 @@
 package org.group4;
 
+import org.group4.Exceptions.ReservationException;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

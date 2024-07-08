@@ -1,14 +1,14 @@
 package org.group4;
 
 
+import org.group4.Exceptions.MenuItemException;
+import org.group4.Exceptions.NoSpaceException;
+import org.group4.Exceptions.ReservationException;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class RestaurantController {
     private final HashMap<String, Restaurant> restaurants = new HashMap<>();
@@ -166,10 +166,25 @@ public class RestaurantController {
         // that has nothing to do with the menu item class since we can just check for
         // the items's existence in the hashmap that is housed here
         // TODO: implement
+        try {
+            MenuItem newItem = menuItems.get(tokens[1]);
+            if (newItem == null) {
+                System.out.printf("ERROR: Menu item doesn't exist");
+                return;
+            }
+            restaurants.get(tokens[2]).addMenuItem(newItem, Integer.valueOf(tokens[3]));
+            System.out.printf("Menu item added: %s - %f", newItem.getName(), Integer.valueOf(tokens[3]));
+        } catch (MenuItemException.AlreadyAdded aa) {
+            System.out.printf("ERROR: item has already been added to this restaurant, try again");
+        }
     }
 
     private void handleCreateMenuItem(String[] tokens) {
         // TODO: implement
+        String name = tokens[1];
+        String[] ingredients = tokens[2].split(":");
+        MenuItem menuItem = new MenuItem(name, ingredients);
+        System.out.printf("%s created\n", name);
     }
 
     private void handleOrderMenuItem(String[] tokens) {
@@ -222,7 +237,17 @@ public class RestaurantController {
     }
 
     private void handleCalculateAveragePrice(String[] tokens) {
-        // TODO: implement
+        MenuItem item = menuItems.get(tokens[1]);
+        if (item == null) {
+            System.out.printf("ERROR: item doesn't exist");
+            return;
+        }
+        try {
+            int price = item.getAveragePrice();
+            System.out.printf("Average price for %s: $%f", item.getName(), price);
+        } catch (MenuItemException.NeverAdded e) {
+            System.out.printf("ERROR: item was never added to a restaurant");
+        }
     }
 
     private void handleViewOwners(String[] tokens) {
@@ -251,18 +276,41 @@ public class RestaurantController {
 
     private void handleViewAllCustomers(String[] tokens) {
         // TODO: implement
+        for (Customer customer : customers.values()) {
+            String id = customer.getId();
+            String firstName = customer.getFirstName();
+            String lastName = customer.getLastName();
+            System.out.printf("%s (%s %s)", id, firstName, lastName);
+        }
     }
 
     private void handleViewAllMenuItems(String[] tokens) {
         // TODO: implement
+        for (MenuItem menuItem : menuItems.values()) {
+            String itemName = menuItem.getName();
+            System.out.println(itemName);
+        }
     }
 
     private void handleViewIngredients(String[] tokens) {
         // TODO: implement
+        MenuItem menuItem = menuItems.get(tokens[1]);
+        String[] ingredientArray = menuItem.getIngredients();
+        String ingredients = "Ingredients: ";
+        for (int i = 0; i < ingredientArray.length; i++) {
+            if (i == ingredientArray.length - 1) {
+                ingredients = ingredients + ingredientArray[i];
+            }
+            ingredients = ingredients + ingredientArray[i] + ", ";
+        }
+        System.out.println(ingredients);
     }
 
     private void handleViewMenuItems(String[] tokens) {
-        // TODO: implement
+        Map<String, RestaurantMenuItem> items = restaurants.get(tokens[1]).getRestaurantMenuItems();
+        for (String key : items.keySet()) {
+            System.out.printf("%s%n", items.get(key).getParentItem().getName());
+        }
     }
 
     private void handleCalculateItemPopularity(String[] tokens) {
