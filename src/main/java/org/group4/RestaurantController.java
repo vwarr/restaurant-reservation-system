@@ -93,7 +93,7 @@ public class RestaurantController {
         Owner owner = owners.get(tokens[7]);
         if (owner == null) {
             // idk why but printing "ERROR: " before the statement causes the loop to terminate
-            System.out.printf("owner doesn't exist\n");
+            System.out.println(".ERROR: Owner does not exist");
         } else {
             License license = new License(tokens[7], tokens[1], tokens[8]);
             owner.addLicense(tokens[1], license);
