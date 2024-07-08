@@ -8,7 +8,11 @@ import org.group4.Exceptions.ReservationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.Arrays;
+import java.util.List;
 
 public class RestaurantController {
     private final HashMap<String, Restaurant> restaurants = new HashMap<>();
@@ -21,7 +25,7 @@ public class RestaurantController {
         Scanner commandLineInput = new Scanner(System.in);
         String wholeInputLine;
         String[] tokens;
-        final String DELIMITER = ",";
+        final String DELIMITER = ", ";
 
         while (true) {
             try {
@@ -58,7 +62,9 @@ public class RestaurantController {
                     handleViewOwners(tokens);
                 } else if (tokens[0].equals("view_all_restaurants")) {
                     handleViewAllRestaurants(tokens);
-                } else if (tokens[0].equals("view_all_customers")) {
+                } else if (tokens[0].equals("view_restaurants_owned")) {
+                    handleViewRestaurantsOwned(tokens);
+                }else if (tokens[0].equals("view_all_customers")) {
                     handleViewAllCustomers(tokens);
                 } else if (tokens[0].equals("view_all_menu_items")) {
                     handleViewAllMenuItems(tokens);
@@ -87,7 +93,7 @@ public class RestaurantController {
     }
 
     private void handleCreateRestaurant(String[] tokens) {
-        Address address = new Address(tokens[3], tokens[4], Integer.parseInt(tokens[5].trim()));
+        Address address = new Address(tokens[3], tokens[4], Integer.parseInt(tokens[5]));
         Owner owner = owners.get(tokens[7]);
         if (owner == null) {
             // idk why but printing "ERROR: " before the statement causes the loop to terminate
@@ -98,6 +104,7 @@ public class RestaurantController {
             Restaurant restaurant = new Restaurant(tokens[1], tokens[2], address, -1,
                     false, Integer.parseInt(tokens[6]), owner);
             System.out.printf("Restaurant created: %s (%s) - %s, %s %s\n", tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]);
+            owner.addOwnedRestaurant(restaurant);
             restaurants.put(restaurant.getId(), restaurant);
         }
     }
@@ -148,7 +155,14 @@ public class RestaurantController {
     }
 
     private void handleCreateOwner(String[] tokens) {
-        // TODO: implement
+        if (owners.get(tokens[1]) != null) {
+            System.out.printf("ERROR: duplicate unique identifier\n");
+        } else {
+            Address address = new Address(tokens[4], tokens[5], Integer.parseInt(tokens[6]));
+            Owner owner = new Owner(LocalDate.parse(tokens[7]), tokens[1], tokens[2], tokens[3], address, tokens[8]);
+            System.out.printf("Owner added: %s - %s %s\n", tokens[1], tokens[2], tokens[3]);
+            owners.put(tokens[1], owner);
+        }
     }
 
     private void handleAddMenuItem(String[] tokens) {
@@ -178,11 +192,52 @@ public class RestaurantController {
     }
 
     private void handleOrderMenuItem(String[] tokens) {
-        // TODO: implement
+        Customer customer = customers.get(tokens[1]);
+        Restaurant restaurant = restaurants.get(tokens[2]);
+        LocalDate reservationDate = LocalDate.parse(tokens[3]);
+        LocalTime reservationTime = LocalTime.parse(tokens[4]);
+        MenuItem menuItem = menuItems.get(tokens[5]);
+        int quantity = Integer.parseInt(tokens[6]);
+
+        try {
+            Reservation reservation = restaurant.orderItem(customer, reservationDate, reservationTime, menuItem, quantity);
+            // int totalPrice = restaurant.getRestaurantMenuItems().get(menuItem.getName()).getPrice() * quantity;
+            System.out.println("Menu item successfully ordered");
+            System.out.printf("Total Price for ordered amount: %d\n", reservation.getLastOrderPrice());
+            System.out.printf("%s updated bill: %d\n", customer.getId(), reservation.getBill());
+            System.out.printf("%s updated funds: %d\n", customer.getId(), customer.getCredits());
+            System.out.printf("%s total revenue from all reservations: %d\n", restaurant.getId(), restaurant.getRevenue());
+        } catch (ReservationException.DoesNotExist e) {
+            System.out.printf("Order failed: Reservation does not exist for %s %s at %s\n", customer.getFirstName(), customer.getLastName(), restaurant.getName());
+        } catch (OrderFoodException.NotInRestaurant e) {
+            System.out.printf("Order failed: Item is not in the restaurant\n");
+        } catch (OrderFoodException.InsufficientCredits e) {
+            System.out.printf("Order failed: Insufficient credits\n");
+        }
     }
 
     private void handleCustomerReview(String[] tokens) {
         // TODO: implement
+        Customer customer = customers.get(tokens[1]);
+        Restaurant restaurant = restaurants.get(tokens[2]);
+        LocalDate reservationDate = LocalDate.parse(tokens[3]);
+        LocalTime reservationTime = LocalTime.parse(tokens[4]);
+        int rating = Integer.parseInt(tokens[5]);
+        List<String> tags = Arrays.asList(tokens[6].split(" "));
+        try {
+            customer.reviewRestaurant(restaurant, reservationDate, reservationTime, rating, tags);
+        System.out.printf("%s (%s) rating for this reservation: %d\n", restaurant.getId(), restaurant.getName(), rating);
+        System.out.printf("%s (%s) average rating: %d\n", restaurant.getId(), restaurant.getName(), restaurant.getRating());
+        System.out.print("Tags: ");
+        for (String tag : restaurant.getTags()) {
+            System.out.print(tag + ", ");
+        }
+        System.out.println();
+        } catch (ReservationException.DoesNotExist e) {
+            System.out.printf("ERROR: reservation doesn't exist");
+        } catch (ReservationException.NotSuccessful e) {
+            System.out.printf("ERROR: reservation wasn't successfully completed");
+        }
     }
 
     private void handleCalculateAveragePrice(String[] tokens) {
@@ -200,15 +255,26 @@ public class RestaurantController {
     }
 
     private void handleViewOwners(String[] tokens) {
-        // TODO: implement
+        //Kind of inefficient bc we check over every owner? do we need a restaurant group class?
+        for (Owner o : owners.values()) {
+            if (o.getRestaurantGroup().equals(tokens[1])) {
+                System.out.printf("%s %s\n", o.getFirstName(), o.getLastName());
+            }
+        }
     }
 
     private void handleViewAllRestaurants(String[] tokens) {
-        // TODO: implement
-        for (Restaurant restaurant : restaurants.values()) {
-            String id = restaurant.getId();
-            String name = restaurant.getName();
-            System.out.printf("%s (%s)\n", id, name);
+        for (Restaurant r : restaurants.values()) {
+            System.out.printf("%s (%s)\n", r.getId(), r.getName());
+        }
+    }
+
+    private void handleViewRestaurantsOwned(String[] tokens) {
+        Owner owner = owners.get(tokens[1]);
+        if (owner != null) {
+            for (Restaurant r : owner.getOwnedRestaurants().values()) {
+                System.out.printf("%s (%s)\n", r.getId(), r.getName());
+            }
         }
     }
 

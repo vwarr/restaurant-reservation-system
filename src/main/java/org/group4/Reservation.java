@@ -1,6 +1,8 @@
 package org.group4;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class Reservation {
@@ -10,6 +12,10 @@ public class Reservation {
     private final int credits;
     private int partySize;
     private ReservationStatus status = ReservationStatus.PENDING;
+    private Map<MenuItem, Integer> orderItems = new HashMap<>();
+
+    private int bill;
+    private int lastOrderPrice;
 
     public static final int RESERVATION_DURATION = 2;
     public static final int WALK_IN_PARTY_SIZE = 4;
@@ -20,6 +26,28 @@ public class Reservation {
         this.dateTime = dateTime;
         this.endTime = dateTime.plusHours(2);
         this.credits = credits;
+        this.bill = 0;
+        this.lastOrderPrice = 0;
+    }
+
+    public int getLastOrderPrice() {
+        return lastOrderPrice;
+    }
+
+    public void setLastOrderPrice(int lastOrderPrice) {
+        this.lastOrderPrice = lastOrderPrice;
+    }
+
+    public void addOrderItem(MenuItem item, int quantity) {
+        orderItems.put(item, orderItems.getOrDefault(item, 0) + quantity);
+    }
+
+    public void updateBill(int cost, int quantity) {
+        this.bill += cost * quantity;
+    }
+
+    public int getBill() {
+        return bill;
     }
 
     public LocalDateTime getDateTime() {

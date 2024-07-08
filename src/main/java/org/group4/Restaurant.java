@@ -1,9 +1,6 @@
 package org.group4;
 
-import org.group4.Exceptions.MenuItemException;
-import org.group4.Exceptions.NoSpaceException;
-import org.group4.Exceptions.ReservationException;
-
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -15,13 +12,14 @@ public class Restaurant {
     private final String id;
     private final String name;
     private final Address address;
-    private int rating = 0;
-    private int numRatings = 0;
+    private int rating;
+    private int reviewCount;
     private boolean top10;
     private final int seatingCapacity;
     private final Map<Reservation.Identifier, Reservation> reservations = new HashMap<>();
     private final Map<String, RestaurantMenuItem> restaurantMenuItems = new HashMap<>();
-    private final List<String> tags = new ArrayList<>();
+    // private final List<String> tags = new ArrayList<>();
+    private final Set<String> tags = new HashSet<>();
     private final Owner owner;
 
     public Restaurant(String uniqueId, String name, Address address, int rating, boolean top10, int seatingCapacity, Owner owner) {
@@ -55,9 +53,10 @@ public class Restaurant {
         return rating;
     }
 
-    public void addRating(int newRating) {
-        this.rating = (this.rating * numRatings + newRating) / numRatings + 1;
-        numRatings++;
+    public void updateRating(int rating) {
+        // TODO: use rolling average formula in MenuItem to calculate new rating (average)
+        this.rating = (this.rating * this.reviewCount + rating) / (this.reviewCount + 1);
+        this.reviewCount++;
     }
 
     public boolean isTop10() {
@@ -74,9 +73,6 @@ public class Restaurant {
 
     public void addMenuItem(MenuItem menuItem, int price) throws MenuItemException.AlreadyAdded {
         RestaurantMenuItem item = new RestaurantMenuItem(this, menuItem, price);
-        if (restaurantMenuItems.containsKey(menuItem.getName())) {
-            throw new MenuItemException.AlreadyAdded();
-        }
         restaurantMenuItems.put(menuItem.getName(), item);
     }
 

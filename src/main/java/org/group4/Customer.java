@@ -104,6 +104,14 @@ public class Customer {
         //  update rating of restaurant
         //  make sure res is valid
         //  add tags to restaurant
+        Reservation reservation = restaurant.checkReservation(this, reservationDate, reservationTime);
+        if (reservation.getStatus() == ReservationStatus.PENDING) {
+            throw new ReservationException.NotSuccessful();
+        }
+        for (String tag: tags) {
+            restaurant.addTag(tag);
+        }
+        restaurant.updateRating(rating);
     }
 
     @Override
