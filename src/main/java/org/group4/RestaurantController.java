@@ -156,6 +156,17 @@ public class RestaurantController {
         // that has nothing to do with the menu item class since we can just check for
         // the items's existence in the hashmap that is housed here
         // TODO: implement
+        try {
+            MenuItem newItem = menuItems.get(tokens[1]);
+            if (newItem == null) {
+                System.out.printf("ERROR: Menu item doesn't exist");
+                return;
+            }
+            restaurants.get(tokens[2]).addMenuItem(newItem, Integer.valueOf(tokens[3]));
+            System.out.printf("Menu item added: %s - %f", newItem.getName(), Integer.valueOf(tokens[3]));
+        } catch (MenuItemException.AlreadyAdded aa) {
+            System.out.printf("ERROR: item has already been added to this restaurant, try again");
+        }
     }
 
     private void handleCreateMenuItem(String[] tokens) {
@@ -234,7 +245,10 @@ public class RestaurantController {
     }
 
     private void handleViewMenuItems(String[] tokens) {
-        // TODO: implement
+        Map<String, RestaurantMenuItem> items = restaurants.get(tokens[1]).getRestaurantMenuItems();
+        for (String key : items.keySet()) {
+            System.out.printf("%s%n", items.get(key).getParentItem().getName());
+        }
     }
 
     private void handleCalculateItemPopularity(String[] tokens) {
