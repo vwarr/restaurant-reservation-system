@@ -315,6 +315,22 @@ public class RestaurantController {
 
     private void handleCalculateItemPopularity(String[] tokens) {
         // TODO: implement
+        if (menuItems.get(tokens[1]) == null) {
+            System.out.printf("ERROR: item doesn't exist\n");
+        } else {
+        try {
+            int popularity = menuItems.get(tokens[1]).calculatePopularity();
+            int totalRestaurants = restaurants.size();
+            double popularityPercentage = (popularity / (double) totalRestaurants) * 100;
+            if (popularityPercentage > 50) {
+                System.out.printf("Popular: %s offered at %d out of %d restaurants (%.0f%%)\n", tokens[1], popularity, totalRestaurants, popularityPercentage);
+            } else {
+                System.out.printf("Not popular: %s offered at %d out of %d restaurants (%.0f%%)\n", tokens[1], popularity, totalRestaurants, popularityPercentage);
+            }
+        } catch (MenuItemException.NeverAdded e) {
+                System.out.printf("ERROR: item was never added to a restaurant\n");
+            }
+        }
     }
 
     void displayMessage(String status, String text_output) {

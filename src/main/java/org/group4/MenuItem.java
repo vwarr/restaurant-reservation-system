@@ -47,8 +47,13 @@ public class MenuItem {
         if (offeredAt.isEmpty()) {
             throw new MenuItemException.NeverAdded();
         }
-        // TODO: IMPLEMENT
-        return 0;
+        int popularity = 0;
+        for (Restaurant restaurant : offeredAt) {
+            if (restaurant.getRestaurantMenuItems().containsKey(this.name)) {
+                popularity++;
+            }
+        }
+        return popularity;
     }
 
     public static class Builder {
