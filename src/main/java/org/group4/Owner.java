@@ -68,7 +68,7 @@ public class Owner implements Person {
         private String id;
         private String firstName = "Unnamed Owner";
         private String lastName = "Guy";
-        private Address address = new Address("123", "Unnamed Street", 12345);
+        private Address address = new Address("123", "Unnamed Street", "12345");
         private LocalDate startDate = LocalDate.parse("2024-06-05");
         private HashMap<String, License> licenses = new HashMap<>();
 
@@ -93,7 +93,7 @@ public class Owner implements Person {
             return this;
         }
 
-        public Builder address(String street, String city, int zip) {
+        public Builder address(String street, String city, String zip) {
             this.address = new Address(street, city, zip);
             return this;
         }

@@ -42,8 +42,8 @@ public class Reservation {
         orderItems.put(item, orderItems.getOrDefault(item, 0) + quantity);
     }
 
-    public void updateBill(int cost, int quantity) {
-        this.bill += cost * quantity;
+    public void updateBill(int cost) {
+        this.bill += cost;
     }
 
     public int getBill() {

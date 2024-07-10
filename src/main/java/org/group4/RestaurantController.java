@@ -89,27 +89,29 @@ public class RestaurantController {
     }
 
     private void handleCreateRestaurant(String[] tokens) {
-        Address address = new Address(tokens[3], tokens[4], Integer.parseInt(tokens[5]));
+        Address address = new Address(tokens[3], tokens[4], tokens[5]);
         Owner owner = owners.get(tokens[7]);
         if (owner == null) {
             // idk why but printing "ERROR: " before the statement causes the loop to terminate
-            System.out.println(".ERROR: Owner does not exist");
+            System.out.println("ERROR: Owner does not exist");
         } else {
             License license = new License(tokens[7], tokens[1], tokens[8]);
             owner.addLicense(tokens[1], license);
             Restaurant restaurant = new Restaurant(tokens[1], tokens[2], address, -1,
                     false, Integer.parseInt(tokens[6]), owner);
             System.out.printf("Restaurant created: %s (%s) - %s, %s %s\n", tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]);
+            System.out.printf("%s (%s %s) owns %s (%s)\n", owner.getId(), owner.getFirstName(), owner.getLastName(), restaurant.getId(), restaurant.getName());
             owner.addOwnedRestaurant(restaurant);
             restaurants.put(restaurant.getId(), restaurant);
         }
     }
 
     private void handleCreateCustomer(String[] tokens) {
-        Address address = new Address(tokens[4], tokens[5], Integer.parseInt(tokens[6]));
+        Address address = new Address(tokens[4], tokens[5], tokens[6]);
         Customer customer = new Customer(tokens[1], tokens[2], tokens[3], address,
                 Double.parseDouble(tokens[7]));
-        System.out.printf("Customer added: %s - %s %s\n", tokens[1], tokens[2], tokens[3]);
+        String lastName = tokens[3] == null ? "" : tokens[3];
+        System.out.printf("Customer added: %s - %s %s\n", tokens[1], tokens[2], lastName);
         customers.put(customer.getId(), customer);
     }
 
@@ -152,9 +154,9 @@ public class RestaurantController {
 
     private void handleCreateOwner(String[] tokens) {
         if (owners.get(tokens[1]) != null) {
-            System.out.printf("ERROR: duplicate unique identifier\n");
+            System.out.println("|ERROR: duplicate unique identifier");
         } else {
-            Address address = new Address(tokens[4], tokens[5], Integer.parseInt(tokens[6]));
+            Address address = new Address(tokens[4], tokens[5], tokens[6]);
             Owner owner = new Owner(LocalDate.parse(tokens[7]), tokens[1], tokens[2], tokens[3], address, tokens[8]);
             System.out.printf("Owner added: %s - %s %s\n", tokens[1], tokens[2], tokens[3]);
             owners.put(tokens[1], owner);
@@ -162,29 +164,28 @@ public class RestaurantController {
     }
 
     private void handleAddMenuItem(String[] tokens) {
-        // NOTE: For doesn't exist errors, handle that here
-        // that has nothing to do with the menu item class since we can just check for
-        // the items's existence in the hashmap that is housed here
-        // TODO: implement
+        MenuItem newItem = menuItems.get(tokens[1]);
+        if (newItem == null) {
+            System.out.println("|ERROR: Menu item doesn't exist");
+            return;
+        }
+
         try {
-            MenuItem newItem = menuItems.get(tokens[1]);
-            if (newItem == null) {
-                System.out.printf("ERROR: Menu item doesn't exist");
-                return;
-            }
-            restaurants.get(tokens[2]).addMenuItem(newItem, Integer.valueOf(tokens[3]));
-            System.out.printf("Menu item added: %s - %f", newItem.getName(), Integer.valueOf(tokens[3]));
+            int price = Integer.parseInt(tokens[3]);
+            Restaurant rest = restaurants.get(tokens[2]);
+            rest.addMenuItem(newItem, price);
+            System.out.printf("(%s) Menu item added: %s - $%d\n", rest.getId(), newItem.getName(), price);
         } catch (MenuItemException.AlreadyAdded aa) {
-            System.out.printf("ERROR: item has already been added to this restaurant, try again");
+            System.out.println("|ERROR: item has already been added to this restaurant, try again");
         }
     }
 
     private void handleCreateMenuItem(String[] tokens) {
-        // TODO: implement
         String name = tokens[1];
         String[] ingredients = tokens[2].split(":");
         MenuItem menuItem = new MenuItem(name, ingredients);
         System.out.printf("%s created\n", name);
+        menuItems.put(name, menuItem);
     }
 
     private void handleOrderMenuItem(String[] tokens) {
@@ -200,7 +201,7 @@ public class RestaurantController {
             // int totalPrice = restaurant.getRestaurantMenuItems().get(menuItem.getName()).getPrice() * quantity;
             System.out.println("Menu item successfully ordered");
             System.out.printf("Total Price for ordered amount: %d\n", reservation.getLastOrderPrice());
-            System.out.printf("%s updated bill: %d\n", customer.getId(), reservation.getBill());
+            System.out.printf("%s bill for current reservation: %d\n", customer.getId(), reservation.getBill());
             System.out.printf("%s updated funds: %d\n", customer.getId(), customer.getCredits());
             System.out.printf("%s total revenue from all reservations: %d\n", restaurant.getId(), restaurant.getRevenue());
         } catch (ReservationException.DoesNotExist e) {
@@ -219,7 +220,7 @@ public class RestaurantController {
         LocalDate reservationDate = LocalDate.parse(tokens[3]);
         LocalTime reservationTime = LocalTime.parse(tokens[4]);
         int rating = Integer.parseInt(tokens[5]);
-        List<String> tags = Arrays.asList(tokens[6].split(" "));
+        List<String> tags = Arrays.asList(tokens[6].split(":"));
         try {
             customer.reviewRestaurant(restaurant, reservationDate, reservationTime, rating, tags);
         System.out.printf("%s (%s) rating for this reservation: %d\n", restaurant.getId(), restaurant.getName(), rating);
@@ -230,23 +231,23 @@ public class RestaurantController {
         }
         System.out.println();
         } catch (ReservationException.DoesNotExist e) {
-            System.out.printf("ERROR: reservation doesn't exist");
+            System.out.println("|ERROR: reservation doesn't exist");
         } catch (ReservationException.NotSuccessful e) {
-            System.out.printf("ERROR: reservation wasn't successfully completed");
+            System.out.println("|ERROR: reservation wasn't successfully completed");
         }
     }
 
     private void handleCalculateAveragePrice(String[] tokens) {
         MenuItem item = menuItems.get(tokens[1]);
         if (item == null) {
-            System.out.printf("ERROR: item doesn't exist");
+            System.out.println("|ERROR: item doesn't exist");
             return;
         }
         try {
             int price = item.getAveragePrice();
-            System.out.printf("Average price for %s: $%f", item.getName(), price);
+            System.out.printf("Average price for %s: $%d\n", item.getName(), price);
         } catch (MenuItemException.NeverAdded e) {
-            System.out.printf("ERROR: item was never added to a restaurant");
+            System.out.println("|ERROR: item was never added to a restaurant");
         }
     }
 
@@ -254,14 +255,14 @@ public class RestaurantController {
         //Kind of inefficient bc we check over every owner? do we need a restaurant group class?
         for (Owner o : owners.values()) {
             if (o.getRestaurantGroup().equals(tokens[1])) {
-                System.out.printf("%s %s\n", o.getFirstName(), o.getLastName());
+                System.out.printf("%s %s%n", o.getFirstName(), o.getLastName());
             }
         }
     }
 
     private void handleViewAllRestaurants(String[] tokens) {
         for (Restaurant r : restaurants.values()) {
-            System.out.printf("%s (%s)\n", r.getId(), r.getName());
+            System.out.printf("%s (%s)%n", r.getId(), r.getName());
         }
     }
 
@@ -269,7 +270,7 @@ public class RestaurantController {
         Owner owner = owners.get(tokens[1]);
         if (owner != null) {
             for (Restaurant r : owner.getOwnedRestaurants().values()) {
-                System.out.printf("%s (%s)\n", r.getId(), r.getName());
+                System.out.printf("%s (%s)%n", r.getId(), r.getName());
             }
         }
     }
@@ -280,7 +281,7 @@ public class RestaurantController {
             String id = customer.getId();
             String firstName = customer.getFirstName();
             String lastName = customer.getLastName();
-            System.out.printf("%s (%s %s)", id, firstName, lastName);
+            System.out.printf("%s (%s %s)%n", id, firstName, lastName);
         }
     }
 
@@ -293,15 +294,14 @@ public class RestaurantController {
     }
 
     private void handleViewIngredients(String[] tokens) {
-        // TODO: implement
         MenuItem menuItem = menuItems.get(tokens[1]);
         String[] ingredientArray = menuItem.getIngredients();
-        String ingredients = "Ingredients: ";
+        StringBuilder ingredients = new StringBuilder("Ingredients: ");
         for (int i = 0; i < ingredientArray.length; i++) {
-            if (i == ingredientArray.length - 1) {
-                ingredients = ingredients + ingredientArray[i];
+            ingredients.append(ingredientArray[i]);
+            if (i < ingredientArray.length - 1) {
+                ingredients.append(", ");
             }
-            ingredients = ingredients + ingredientArray[i] + ", ";
         }
         System.out.println(ingredients);
     }
@@ -309,14 +309,14 @@ public class RestaurantController {
     private void handleViewMenuItems(String[] tokens) {
         Map<String, RestaurantMenuItem> items = restaurants.get(tokens[1]).getRestaurantMenuItems();
         for (String key : items.keySet()) {
-            System.out.printf("%s%n", items.get(key).getParentItem().getName());
+            System.out.println(items.get(key).getParentItem().getName());
         }
     }
 
     private void handleCalculateItemPopularity(String[] tokens) {
         // TODO: implement
         if (menuItems.get(tokens[1]) == null) {
-            System.out.printf("ERROR: item doesn't exist\n");
+            System.out.println("|ERROR: item doesn't exist");
         } else {
         try {
             int popularity = menuItems.get(tokens[1]).calculatePopularity();

@@ -87,6 +87,10 @@ public class Restaurant {
     }
 
     public void addMenuItem(MenuItem menuItem, int price) throws MenuItemException.AlreadyAdded {
+        if (restaurantMenuItems.containsKey(menuItem.getName())) {
+            throw new MenuItemException.AlreadyAdded();
+        }
+
         RestaurantMenuItem item = new RestaurantMenuItem(this, menuItem, price);
         restaurantMenuItems.put(menuItem.getName(), item);
     }
@@ -151,7 +155,7 @@ public class Restaurant {
         //Update the reservation lastOrderPrice variable
         reservation.setLastOrderPrice(orderCost);
         //Update the bill of the reservation
-        reservation.updateBill(orderCost, quantity);
+        reservation.updateBill(orderCost);
         //Update the order items of the reservation
         reservation.addOrderItem(item, quantity);
         //Update the revenue of the restaurant
@@ -188,6 +192,9 @@ public class Restaurant {
             Reservation reservation = reservations.get(identifier);
             reservation.setStatus(ReservationStatus.SUCCESS);
             customer.incrementCredits(reservation.getCredits());
+            // Don't really know why I need this but the test cases have it... if you make
+            // a successful reservation, shouldn't seats be a shoe-in?
+            System.out.println(IOMessages.getSeatsAvailableMessage(customer));
             return;
         }
 
@@ -271,7 +278,7 @@ public class Restaurant {
         private final String id;
         private String name = "Unnamed Restaurant";
         private Owner owner = new Owner.Builder("SomeOwner").build();
-        private Address address = new Address("123", "Unnamed Street", 12345);
+        private Address address = new Address("123", "Unnamed Street", "12345");
         private int rating = 0;
         private boolean top10 = false;
         private int seatingCapacity = 1000; // we are assuming if you don't use it, you have a lot of space
@@ -290,7 +297,7 @@ public class Restaurant {
             return this;
         }
 
-        public Builder address(String street, String city, int zip) {
+        public Builder address(String street, String city, String zip) {
             this.address = new Address(street, city, zip);
             return this;
         }

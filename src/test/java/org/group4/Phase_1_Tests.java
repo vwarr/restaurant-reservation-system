@@ -19,7 +19,7 @@ public class Phase_1_Tests {
         // create_restaurant,REST001,Olive Garden,Coral Springs,FL,33071,45,false,6
         Restaurant rest001 = new Restaurant.Builder("REST001")
                 .name("Olive Garden")
-                .address("Coral Springs", "FL", 33071)
+                .address("Coral Springs", "FL", "33071")
                 .rating(45)
                 .top10(false)
                 .seatingCapacity(6)
@@ -28,7 +28,7 @@ public class Phase_1_Tests {
         // create_restaurant,REST002,Cheesecake Factory,Boca Raton,FL,33431,48,false,
         Restaurant rest002 = new Restaurant.Builder("REST002")
                 .name("Cheesecake Factory")
-                .address("Boca Raton", "FL", 33431)
+                .address("Boca Raton", "FL", "33431")
                 .rating(48)
                 .top10(false)
                 .build();
@@ -36,7 +36,7 @@ public class Phase_1_Tests {
         // create_restaurant,REST003,Papa Johns,Lauderdale Lakes,FL,33313,50,false,6
         Restaurant rest003 = new Restaurant.Builder("REST003")
                 .name("Papa Johns")
-                .address("Lauderdale Lakes", "FL", 33313)
+                .address("Lauderdale Lakes", "FL", "33313")
                 .rating(50)
                 .top10(false)
                 .seatingCapacity(6)
@@ -45,7 +45,7 @@ public class Phase_1_Tests {
         // create_restaurant,REST004,IL Mulino,Tampa,FL,33019,33,false,6
         Restaurant rest004 = new Restaurant.Builder("REST004")
                 .name("IL Mulino")
-                .address("Tampa", "FL", 33019)
+                .address("Tampa", "FL", "33019")
                 .rating(33)
                 .top10(false)
                 .seatingCapacity(6)
@@ -55,7 +55,7 @@ public class Phase_1_Tests {
         Customer cust001 = new Customer.Builder("CUST001")
                 .firstName("Angel")
                 .lastName("Cabrera")
-                .address("Miami", "FL", 33122)
+                .address("Miami", "FL", "33122")
                 .funds(100.0)
                 .build();
 
@@ -63,7 +63,7 @@ public class Phase_1_Tests {
         Customer cust002 = new Customer.Builder("CUST002")
                 .firstName("Mark")
                 .lastName("Moss")
-                .address("Atlanta", "GA", 30313)
+                .address("Atlanta", "GA", "30313")
                 .funds(100.0)
                 .build();
 
@@ -71,7 +71,7 @@ public class Phase_1_Tests {
         Customer cust003 = new Customer.Builder("CUST003")
                 .firstName("Neel")
                 .lastName("Ganediwal")
-                .address("Parkland", "FL", 33067)
+                .address("Parkland", "FL", "33067")
                 .funds(100.0)
                 .build();
 
@@ -79,7 +79,7 @@ public class Phase_1_Tests {
         Customer cust004 = new Customer.Builder("CUST004")
                 .firstName("Henry")
                 .lastName("Owen")
-                .address("Chicago", "IL", 60629)
+                .address("Chicago", "IL", "60629")
                 .funds(100.0)
                 .build();
 

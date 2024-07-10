@@ -145,7 +145,7 @@ public class Customer {
             return this;
         }
 
-        public Builder address(String city, String state, int zip) {
+        public Builder address(String city, String state, String zip) {
             this.address = new Address(city, state, zip);
             return this;
         }

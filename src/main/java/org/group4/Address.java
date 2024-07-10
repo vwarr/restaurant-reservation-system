@@ -1,6 +1,6 @@
 package org.group4;
 
-public record Address(String streetName, String stateAbbreviation, int zipCode) {
+public record Address(String streetName, String stateAbbreviation, String zipCode) {
     @Override
     public String toString() {
         return "Address{" +
