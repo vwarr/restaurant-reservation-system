@@ -35,6 +35,7 @@ public class RestaurantInputHandler {
                 .owner(owner)
                 .top10(false)
                 .rating(-1)
+                .licenseId(licenseId)
                 .build();
 
         owner.addOwnedRestaurant(restaurant);
@@ -62,11 +63,11 @@ public class RestaurantInputHandler {
         Restaurant restaurant = ReservationSystemData.getInstance().getRestaurant(restaurantId);
         try {
             Reservation res = restaurant.makeReservation(customer, partySize, dateTime, credits);
-            System.out.printf("Reservation requested for %s %s", customer.getFirstName(), customer.getLastName());
+            System.out.printf("Reservation requested for %s", customer.getId());
             System.out.print("\nReservation confirmed");
             System.out.printf("\nReservation made for %s (%s %s) at %s\n", customer.getId(), customer.getFirstName(), customer.getLastName(), restaurant.getName());
         } catch(ReservationException.Conflict rce) {
-            System.out.printf("Reservation requested for %s %s", customer.getFirstName(), customer.getLastName());
+            System.out.printf("Reservation requested for %s", customer.getId());
             System.out.print("\nReservation request denied, customer already has reservation with another restaurant within 2 hours of the requested time\n");
         } catch(ReservationException.FullyBooked nse) {
             System.out.printf("Reservation requested for %s %s", customer.getFirstName(), customer.getLastName());
@@ -108,7 +109,7 @@ public class RestaurantInputHandler {
         Owner owner = ReservationSystemData.getInstance().getOwner(ownerId);
         if (owner != null) {
             for (Restaurant r : owner.getOwnedRestaurants().values()) {
-                System.out.printf("%s (%s)%n", r.getId(), r.getName());
+                System.out.printf("%s (%s): Unified License - %s%n", r.getId(), r.getName(), r.getLicenseId());
             }
         }
     }

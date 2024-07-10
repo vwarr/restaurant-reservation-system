@@ -10,4 +10,7 @@ public record License(String ownerId, String restaurantId, String name) {
                 ", restaurantId=" + restaurantId +
                 '}';
     }
+    public String getownerID() {
+        return ownerId;
+    }
 }

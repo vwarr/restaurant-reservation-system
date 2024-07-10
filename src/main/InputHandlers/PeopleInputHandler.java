@@ -13,7 +13,7 @@ public class PeopleInputHandler {
         // Sort Input
         String customerId = tokens[1];
         String firstName = tokens[2];
-        String lastName = tokens[3];
+        String lastName = tokens[3].equals("null") ? null : tokens[3];
         String streetName = tokens[4];
         String state = tokens[5];
         String zipCode = tokens[6];

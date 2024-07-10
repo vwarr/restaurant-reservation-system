@@ -7,7 +7,7 @@ create_owner, OWN003, Joshua, Kobza, Toronto, ON, M5X, 2023-05-01, Restaurant Br
 //ERROR: duplicate unique identifier
 create_owner, OWN003, Mark, Moss, Atlanta, GA, 30313, 2023-05-01, Restaurant Brands
 //create restaurants
-create_restaurant, REST001, Mellow Mushroom, Boca Raton, FL, 33431, 6, OWN001, FS817
+create_restaurant, REST001, Mellow Mushroom, Boca Raton, FL, 33431, 8, OWN001, FS817
 create_restaurant, REST002, Little Caesars, Key West, FL, 30289, 7, OWN001, FS526
 create_restaurant, REST003, Pizza Hut, Buckhead, GA, 30625, 7, OWN002, FS035
 create_restaurant, REST004, Domino’s, Alpharetta, GA, 30504, 7, OWN002, FS182
