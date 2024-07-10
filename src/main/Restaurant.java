@@ -203,7 +203,8 @@ public class Restaurant {
             Reservation.Identifier identifier = Reservation.Identifier.of(customer, LocalDateTime.of(reservationDate, reservationTime));
             Reservation reservation = reservations.get(identifier);
             reservation.setStatus(ReservationStatus.MISSED);
-            reservations.remove(reservation.getIdentifier());
+//            reservations.remove(reservation.getIdentifier());
+
 
             customer.incrementMissedReservations();
             // If customer misses three reservations reset missed reservation counter and reset credits.
@@ -251,10 +252,12 @@ public class Restaurant {
 //            LocalDateTime end2 = arrivalDateTime.plusHours(RESERVATION_DURATION);
 //
 //            boolean overlaps = !(end1.isBefore(start2) || start1.isAfter(end2));
-            boolean overlaps = r.getDateTime().isBefore(arrivalDateTime)
-                    && r.getEndTime().isAfter(arrivalDateTime);
-            if (overlaps || r.getDateTime().isEqual(arrivalDateTime)) {
-                usedSeats += r.getPartySize();
+            if (r.getStatus() != ReservationStatus.MISSED) {
+                boolean overlaps = r.getDateTime().isBefore(arrivalDateTime)
+                        && r.getEndTime().isAfter(arrivalDateTime);
+                if (overlaps || r.getDateTime().isEqual(arrivalDateTime)) {
+                    usedSeats += r.getPartySize();
+                }
             }
         }
         return seatingCapacity - usedSeats;

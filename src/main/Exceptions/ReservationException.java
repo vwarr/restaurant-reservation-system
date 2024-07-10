@@ -9,7 +9,9 @@ public class ReservationException {
             super("Customer has a reservation within %s hours of this time".formatted(Reservation.RESERVATION_DURATION));
         }
     }
-
+    public static class Missed extends Exception {
+        public Missed() {super("Customer was late.");}
+    }
     public static class FullyBooked extends Exception {
         public FullyBooked() {
             super("Restaurant is fully booked at this time");

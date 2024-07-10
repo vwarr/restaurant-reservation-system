@@ -103,6 +103,8 @@ public class PeopleInputHandler {
                 System.out.print(tag + ", ");
             }
             System.out.println();
+        } catch (ReservationException.Missed e ){
+            System.out.println("ERROR: reservation wasn't successfully completed");
         } catch (ReservationException.DoesNotExist e) {
             System.out.println("ERROR: reservation doesn't exist");
         } catch (ReservationException.NotSuccessful e) {
