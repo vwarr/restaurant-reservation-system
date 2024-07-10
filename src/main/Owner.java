@@ -37,8 +37,8 @@ public class Owner implements Person {
     }
     public HashMap<String, Restaurant> getOwnedRestaurants() { return ownedRestaurants; }
 
-    public void addLicense(String id, License license) {
-        this.licenses.put(id, license);
+    public void addLicense(String restaurantId, String name) {
+        this.licenses.put(restaurantId, new License(id, restaurantId, name));
     }
 
     public String getId() {
@@ -52,6 +52,9 @@ public class Owner implements Person {
 
     @Override
     public String getLastName() {
+       if (lastName == null) {
+            return "";
+        }
         return lastName;
     }
 

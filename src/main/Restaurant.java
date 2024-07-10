@@ -150,7 +150,7 @@ public class Restaurant {
         if (customer.getCredits() < orderCost) {
             throw new OrderFoodException.InsufficientCredits();
         }
-        customer.setCredits(customer.getCredits() - orderCost);
+        customer.setFunds(customer.getFunds() - orderCost);
         //Update the reservation lastOrderPrice variable
         reservation.setLastOrderPrice(orderCost);
         //Update the bill of the reservation
@@ -193,7 +193,7 @@ public class Restaurant {
             customer.incrementCredits(reservation.getCredits());
             // Don't really know why I need this but the test cases have it... if you make
             // a successful reservation, shouldn't seats be a shoe-in?
-            System.out.println(IOMessages.getSeatsAvailableMessage(customer));
+            System.out.print(IOMessages.getSeatsAvailableMessage(customer));
             return;
         }
 

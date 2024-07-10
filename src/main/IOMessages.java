@@ -42,7 +42,7 @@ public class IOMessages {
             Seats not available - Request denied
             """;
 
-    static String getNoSeatsMessage() {
+    public static String getNoSeatsMessage() {
         return SEATS_UNAVAILABLE;
     }
 

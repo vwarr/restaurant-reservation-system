@@ -9,7 +9,7 @@ public class MenuItem {
     private final String name;
     private final String[] ingredients;
     private final List<Restaurant> offeredAt;
-    private int averagePrice = 0;
+    private double averagePrice = 0;
 
     public MenuItem(String name, String[] ingredients) {
         this.name = name;
@@ -29,14 +29,15 @@ public class MenuItem {
         return offeredAt;
     }
 
-    // TODO: test this, I generated it with AI
     public void addOfferingRestaurant(Restaurant restaurant, int price) {
         this.offeredAt.add(restaurant);
-        int n = offeredAt.size();
-        this.averagePrice = (this.averagePrice * n + price) / (n + 1);
+        double n = offeredAt.size();
+        // newAverage = oldAverage + (newValue - oldAverage) / newSize
+        // from: https://math.stackexchange.com/questions/22348/how-to-add-and-subtract-values-from-an-average
+        this.averagePrice = this.averagePrice + (price - this.averagePrice) / n;
     }
 
-    public int getAveragePrice() throws MenuItemException.NeverAdded {
+    public double getAveragePrice() throws MenuItemException.NeverAdded {
         if (offeredAt.isEmpty()) {
             throw new MenuItemException.NeverAdded();
         }

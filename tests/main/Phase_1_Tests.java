@@ -56,7 +56,7 @@ public class Phase_1_Tests {
                 .firstName("Angel")
                 .lastName("Cabrera")
                 .address("Miami", "FL", "33122")
-                .funds(100.0)
+                .funds(100)
                 .build();
 
         // create_customer,CUST002,Mark,Moss,Atlanta,GA,30313,100.0
@@ -64,7 +64,7 @@ public class Phase_1_Tests {
                 .firstName("Mark")
                 .lastName("Moss")
                 .address("Atlanta", "GA", "30313")
-                .funds(100.0)
+                .funds(100)
                 .build();
 
         // create_customer,CUST003,Neel,Ganediwal,Parkland,FL,33067,100.0
@@ -72,7 +72,7 @@ public class Phase_1_Tests {
                 .firstName("Neel")
                 .lastName("Ganediwal")
                 .address("Parkland", "FL", "33067")
-                .funds(100.0)
+                .funds(100)
                 .build();
 
         // create_customer,CUST004,Henry,Owen,Chicago,IL,60629,100.0
@@ -80,7 +80,7 @@ public class Phase_1_Tests {
                 .firstName("Henry")
                 .lastName("Owen")
                 .address("Chicago", "IL", "60629")
-                .funds(100.0)
+                .funds(100)
                 .build();
 
         // make_reservation,CUST001,REST001,4,2024-05-24,19:00,80

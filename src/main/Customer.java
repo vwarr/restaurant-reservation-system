@@ -15,12 +15,12 @@ public class Customer {
     private final String firstName;
     private final String lastName;
     private final Address address;
-    private double funds;
+    private int funds;
     private int credits;
     private int missedReservations;
     private final List<Reservation> reservations = new ArrayList<>();
 
-    public Customer(String uniqueId, String firstName, String lastName, Address address, double funds) {
+    public Customer(String uniqueId, String firstName, String lastName, Address address, int funds) {
         this.id = (uniqueId == null) ? UUID.randomUUID().toString() : uniqueId;
         this.firstName = firstName;
         // NOTE: We must consider the case when this is optional, like with Beyonce
@@ -35,6 +35,10 @@ public class Customer {
     }
 
     public String getLastName() {
+        // Implementing "optional" last names
+        if (lastName == null) {
+            return "";
+        }
         return lastName;
     }
 
@@ -62,11 +66,11 @@ public class Customer {
         this.missedReservations++;
     }
 
-    public double getFunds() {
+    public int getFunds() {
         return funds;
     }
 
-    public void setFunds(double funds) {
+    public void setFunds(int funds) {
         this.funds = funds;
     }
 
@@ -125,7 +129,7 @@ public class Customer {
         private String firstName;
         private String lastName;
         private Address address;
-        private double funds;
+        private int funds;
         private int credits;
         private int missedReservations;
 
@@ -148,7 +152,7 @@ public class Customer {
             return this;
         }
 
-        public Builder funds(double funds) {
+        public Builder funds(int funds) {
             this.funds = funds;
             return this;
         }
