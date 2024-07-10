@@ -304,4 +304,21 @@ public class Reservation_Integration_Tests {
                 () -> restaurant.onCustomerArrival(customer2, dateTime.toLocalDate(), dateTime.toLocalTime().plusMinutes(61), dateTime.toLocalTime()));
     }
 
+    @Test
+    void Reservation_FAIL_Over_Capacity() {
+        final int MAX_SEATS = 8;
+        LocalDateTime dateTime = LocalDateTime.parse("2024-05-24T19:00:00");
+
+        // Arrange
+        Restaurant restaurant = new Restaurant.Builder("R1").seatingCapacity(MAX_SEATS).build();
+        Customer customer = new Customer.Builder("C1").build();
+        Customer customer2 = new Customer.Builder("C2").build();
+        Customer customer3 = new Customer.Builder("C3").build();
+
+        assertDoesNotThrow(() -> restaurant.makeReservation(customer, 4, dateTime, 80));
+        assertDoesNotThrow(() -> restaurant.makeReservation(customer2, 4, dateTime, 80));
+
+        assertThrows(ReservationException.FullyBooked.class, () -> restaurant.makeReservation(customer3, 1, dateTime, 80));
+    }
+
 }

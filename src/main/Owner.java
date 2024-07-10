@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class Owner implements Person {
+public class Owner {
     private final String id;
     private final String firstName;
     private final String lastName;
@@ -45,12 +45,10 @@ public class Owner implements Person {
         return id;
     }
 
-    @Override
     public String getFirstName() {
         return firstName;
     }
 
-    @Override
     public String getLastName() {
        if (lastName == null) {
             return "";
@@ -58,7 +56,6 @@ public class Owner implements Person {
         return lastName;
     }
 
-    @Override
     public Address getAddress() {
         return address;
     }
