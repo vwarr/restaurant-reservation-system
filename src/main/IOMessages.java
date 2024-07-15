@@ -19,7 +19,7 @@ public class IOMessages {
             """;
 
    private static final String ON_TIME = """
-            Customer %s (%s %s) has arrived on time at %s
+            Customer %s (%s %s) has arrived at %s
             %s %s - Successfully completed reservation
             Full credits rewarded
             """;

@@ -1,4 +1,4 @@
->> create_restaurant, REST001, Olive Garden, Homestead, FL, 33071, 7, OWN001, FS526
+>> create_restaurant, REST001, Olive Garden, Homestead, FL, 33071, 8, OWN001, FS526
 ERROR: owner doesn't exist
 
 >> create_owner, OWN001, Ricardo, Cardenas, Orlando, FL, 32801, 2022-05-30, Restaurant Brands

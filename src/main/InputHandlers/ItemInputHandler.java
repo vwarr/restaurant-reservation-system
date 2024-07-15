@@ -67,7 +67,7 @@ public class ItemInputHandler {
             System.out.println("Menu item successfully ordered");
             System.out.printf("Total Price for ordered amount: %d%n", reservation.getLastOrderPrice());
             System.out.printf("%s bill for current reservation: %d%n", customer.getId(), reservation.getBill());
-            System.out.printf("%s updated funds: %d\n", customer.getId(), customer.getFunds());
+            System.out.printf("%s remaining funds: %d\n", customer.getId(), customer.getFunds());
             System.out.printf("%s total revenue from all reservations: %d%n", restaurant.getId(), restaurant.getRevenue());
         } catch (ReservationException.DoesNotExist e) {
             // Output

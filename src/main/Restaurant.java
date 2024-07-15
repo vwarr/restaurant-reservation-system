@@ -26,9 +26,10 @@ public class Restaurant {
     private final Set<String> tags = new HashSet<>();
     private final Owner owner;
     private int revenue;
+    private String licenseId;
 
 
-    public Restaurant(String uniqueId, String name, Address address, int rating, boolean top10, int seatingCapacity, Owner owner) {
+    public Restaurant(String uniqueId, String name, Address address, int rating, boolean top10, int seatingCapacity, Owner owner, String licenseId) {
         this.id = (uniqueId == null) ? UUID.randomUUID().toString() : uniqueId;
         this.name = name;
         this.address = address;
@@ -39,6 +40,7 @@ public class Restaurant {
         owner.addOwnedRestaurant(this);
         this.revenue = 0;
         this.reviewCount = 0;
+        this.licenseId = licenseId;
     }
 
     public int getRevenue() {
@@ -191,9 +193,6 @@ public class Restaurant {
             Reservation reservation = reservations.get(identifier);
             reservation.setStatus(ReservationStatus.SUCCESS);
             customer.incrementCredits(reservation.getCredits());
-            // Don't really know why I need this but the test cases have it... if you make
-            // a successful reservation, shouldn't seats be a shoe-in?
-            System.out.print(IOMessages.getSeatsAvailableMessage(customer));
             return;
         }
 
@@ -204,7 +203,8 @@ public class Restaurant {
             Reservation.Identifier identifier = Reservation.Identifier.of(customer, LocalDateTime.of(reservationDate, reservationTime));
             Reservation reservation = reservations.get(identifier);
             reservation.setStatus(ReservationStatus.MISSED);
-            reservations.remove(reservation.getIdentifier());
+//            reservations.remove(reservation.getIdentifier());
+
 
             customer.incrementMissedReservations();
             // If customer misses three reservations reset missed reservation counter and reset credits.
@@ -252,13 +252,19 @@ public class Restaurant {
 //            LocalDateTime end2 = arrivalDateTime.plusHours(RESERVATION_DURATION);
 //
 //            boolean overlaps = !(end1.isBefore(start2) || start1.isAfter(end2));
-            boolean overlaps = r.getDateTime().isBefore(arrivalDateTime)
-                    && r.getEndTime().isAfter(arrivalDateTime);
-            if (overlaps || r.getDateTime().isEqual(arrivalDateTime)) {
-                usedSeats += r.getPartySize();
+            if (r.getStatus() != ReservationStatus.MISSED) {
+                boolean overlaps = r.getDateTime().isBefore(arrivalDateTime)
+                        && r.getEndTime().isAfter(arrivalDateTime);
+                if (overlaps || r.getDateTime().isEqual(arrivalDateTime)) {
+                    usedSeats += r.getPartySize();
+                }
             }
         }
         return seatingCapacity - usedSeats;
+    }
+
+    public String getLicenseId() {
+        return licenseId;
     }
 
     @Override
@@ -281,7 +287,7 @@ public class Restaurant {
         private int rating = 0;
         private boolean top10 = false;
         private int seatingCapacity = 1000; // we are assuming if you don't use it, you have a lot of space
-
+        private String licenseId;
         public Builder(String id) {
             this.id = id;
         }
@@ -316,8 +322,13 @@ public class Restaurant {
             return this;
         }
 
+        public Builder licenseId(String license) {
+            this.licenseId = license;
+            return this;
+        }
+
         public Restaurant build() {
-            return new Restaurant(id, name, address, rating, top10, seatingCapacity, owner);
+            return new Restaurant(id, name, address, rating, top10, seatingCapacity, owner, licenseId);
         }
     }
 }

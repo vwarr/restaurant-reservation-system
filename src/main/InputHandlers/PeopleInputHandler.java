@@ -13,7 +13,7 @@ public class PeopleInputHandler {
         // Sort Input
         String customerId = tokens[1];
         String firstName = tokens[2];
-        String lastName = tokens[3];
+        String lastName = tokens[3].equals("null") ? null : tokens[3];
         String streetName = tokens[4];
         String state = tokens[5];
         String zipCode = tokens[6];
@@ -103,6 +103,8 @@ public class PeopleInputHandler {
                 System.out.print(tag + ", ");
             }
             System.out.println();
+        } catch (ReservationException.Missed e ){
+            System.out.println("ERROR: reservation wasn't successfully completed");
         } catch (ReservationException.DoesNotExist e) {
             System.out.println("ERROR: reservation doesn't exist");
         } catch (ReservationException.NotSuccessful e) {

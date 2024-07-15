@@ -101,12 +101,15 @@ public class Customer {
     }
 
     public void reviewRestaurant(Restaurant restaurant, LocalDate reservationDate, LocalTime reservationTime, int rating, List<String> tags)
-        throws ReservationException.NotSuccessful, ReservationException.DoesNotExist {
+        throws ReservationException.NotSuccessful, ReservationException.DoesNotExist, ReservationException.Missed {
         // TODO: Implement
         //  update rating of restaurant
         //  make sure res is valid
         //  add tags to restaurant
         Reservation reservation = restaurant.checkReservation(this, reservationDate, reservationTime);
+        if (reservation.getStatus() == ReservationStatus.MISSED) {
+            throw new ReservationException.Missed();
+        }
         if (reservation.getStatus() == ReservationStatus.PENDING) {
             throw new ReservationException.NotSuccessful();
         }
