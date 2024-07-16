@@ -1,0 +1,40 @@
+{% extends "base.peb" %}
+
+{% block title %} Create Restaurant {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1> Create Restaurant </h1>
+    <form method="POST" action="/restaurants/create">
+        <div class="mb-3">
+            <label for="id" class="form-label">Unique ID</label>
+            <input type="text" class="form-control" id="id" name="id">
+        </div>
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name">
+        </div>
+        {# street name #}
+        <div class="mb-3">
+            <label for="street" class="form-label">Street</label>
+            <input type="text" class="form-control" id="street" name="street">
+        </div>
+        {# state abbreviation #}
+        <div class="mb-3">
+            <label for="state" class="form-label">State</label>
+            <input type="text" class="form-control" id="state" name="state">
+        </div>
+        {# zip code #}
+        <div class="mb-3">
+            <label for="zip" class="form-label">Zip Code</label>
+            <input type="text" class="form-control" id="zip" name="zip">
+        </div>
+        {# seating capacity #}
+        <div class="mb-3">
+            <label for="capacity" class="form-label">Seating Capacity</label>
+            <input type="number" class="form-control" id="capacity" name="capacity">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}

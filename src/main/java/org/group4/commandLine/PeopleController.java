@@ -1,7 +1,10 @@
 package org.group4.commandLine;
 
-import main.*;
-import main.Exceptions.ReservationException;
+import org.group4.exceptions.ReservationException;
+import org.group4.Customer;
+import org.group4.Owner;
+import org.group4.ReservationSystemData;
+import org.group4.Restaurant;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

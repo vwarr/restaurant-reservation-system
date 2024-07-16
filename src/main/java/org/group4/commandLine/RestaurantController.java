@@ -1,8 +1,8 @@
 package org.group4.commandLine;
 
-import main.*;
-import main.Exceptions.NoSpaceException;
-import main.Exceptions.ReservationException;
+import org.group4.*;
+import org.group4.exceptions.NoSpaceException;
+import org.group4.exceptions.ReservationException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

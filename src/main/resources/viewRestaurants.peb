@@ -1,0 +1,16 @@
+{# @pebvariable name="restaurants" type="java.util.Collection<org.group4.Restaurant>" #}
+
+{% extends "base.peb" %}
+
+{% block title %} View Restaurants {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1> Restaurants </h1>
+    <ul>
+        {% for r in restaurants %}
+            <li> REST ID: {{ r.id }} </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
