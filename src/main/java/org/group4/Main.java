@@ -8,6 +8,7 @@ import org.group4.commandLine.CommandLineController;
 import org.group4.routers.RestaurantRouter;
 import org.group4.serverUtil.HotReloadingFileLoader;
 import org.group4.serverUtil.PebbleFileRenderer;
+import org.group4.serverUtil.TestData;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -26,6 +27,10 @@ public class Main {
             CommandLineController simulator = new CommandLineController();
             simulator.commandLoop();
         } else {
+            // For populating test data
+            TestData.generateOwners();
+            TestData.generateCustomers();
+            TestData.generateRestaurants();
 
             var app = Javalin.create(config -> {
                 config.fileRenderer(new PebbleFileRenderer());

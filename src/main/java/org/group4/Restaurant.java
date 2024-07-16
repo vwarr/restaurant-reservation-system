@@ -325,6 +325,11 @@ public class Restaurant {
             return this;
         }
 
+        public Builder address(Address address) {
+            this.address = address;
+            return this;
+        }
+
         public Builder rating(int rating) {
             this.rating = rating;
             return this;
