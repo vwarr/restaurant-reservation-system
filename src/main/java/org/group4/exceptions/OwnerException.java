@@ -1,0 +1,14 @@
+package org.group4.exceptions;
+
+public class OwnerException {
+
+    public static class DuplicatedUniqueId extends Exception {
+        public DuplicatedUniqueId() {
+            super("ERROR: duplicate unique identifier");
+        }
+    }
+
+    public static class OwnerDoesNotExist extends Exception {
+        public OwnerDoesNotExist() { super("ERROR: owner does not exist"); }
+    }
+}
