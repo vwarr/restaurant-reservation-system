@@ -1,0 +1,16 @@
+{% extends "bases/createFormBase.peb" %}
+
+{% block action %}/restaurants/create{% endblock %}
+
+{% block formTitle %}Create Restaurant{% endblock %}
+
+{% block formBody %}
+    {{ formInput("text", "id") }}
+    {{ formInput("text", "name") }}
+    {{ formInput("text", "street") }}
+    {{ formInput("text", "state") }}
+    {{ formInput("text", "zip") }}
+    {{ formInput("number", "capacity") }}
+    {{ formInput("text", "ownerId") }}
+    {{ formInput("text", "licenseId") }}
+{% endblock %}

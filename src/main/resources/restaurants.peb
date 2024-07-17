@@ -1,0 +1,15 @@
+{% extends "bases/base.peb" %}
+{% block title %} Restaurants {% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                {% include "viewRestaurants.peb" %}
+            </div>
+            <div class="col">
+                {% include "createRestaurant.peb" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

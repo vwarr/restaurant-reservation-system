@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="CLI" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="org.group4.Main" />
+    <module name="group-4-rrs-server" />
+    <option name="PROGRAM_PARAMETERS" value="cli" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="org.group4.commandLine.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

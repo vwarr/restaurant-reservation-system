@@ -1,0 +1,17 @@
+{% macro formInput(type="text", name) %}
+    <div class="mb-3">
+        <label for="{{ name }}" class="form-label">{{ name | capitalize }}</label>
+        <input type="{{ type }}" class="form-control" id="{{ name }}" name="{{ name }}">
+    </div>
+{% endmacro %}
+
+<div class="container">
+    <h1 class="display-1">{% block formTitle %}{% endblock %}</h1>
+    <form method="{% block method %}POST{% endblock %}"
+          action="{% block action %}/{% endblock %}">
+        {% block formBody %}
+
+        {% endblock %}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>

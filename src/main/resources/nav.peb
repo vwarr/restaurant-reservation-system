@@ -1,0 +1,7 @@
+{% extends "bases/navBase.peb" %}
+
+{% block navItems %}
+   {{ navItem("Home", "/") }}
+   {{ navItem("Restaurants", "/restaurants") }}
+{% endblock %}
+
