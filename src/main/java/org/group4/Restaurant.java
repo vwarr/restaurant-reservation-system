@@ -261,6 +261,8 @@ public class Restaurant {
          */
         // I thought reservations were defined by the date and time, so how could they arrive to the reservation one day late?
         // Wouldn't it just be treated like a walk in, since there is no way to identify the reservation
+
+        // TODO: make this work with date times, not just times, or just add date check
         if (arrivalTime.isAfter(reservationTime.plusMinutes(15))) {
             return ArrivalStatus.LATE;
         } else if (arrivalTime.isBefore(reservationTime.minusMinutes(30))) {
