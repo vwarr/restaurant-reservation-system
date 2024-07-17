@@ -12,7 +12,7 @@ public class Reservation {
     private final int credits;
     private int partySize;
     private ReservationStatus status = ReservationStatus.PENDING;
-    private Map<MenuItem, Integer> orderItems = new HashMap<>();
+    private final Map<MenuItem, Integer> orderItems = new HashMap<>();
 
     private int bill;
     private int lastOrderPrice;

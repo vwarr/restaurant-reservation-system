@@ -17,13 +17,13 @@ public class ItemController {
         int price = Integer.parseInt(tokens[3]);
 
         // Handle input
-        if (ReservationSystemData.getInstance().isMenuItemAbsent(itemName)) {
+        if (ReservationSystem.getInstance().isMenuItemAbsent(itemName)) {
             System.out.println("ERROR: Menu item doesn't exist");
             return;
         }
 
-        MenuItem newItem = ReservationSystemData.getInstance().getMenuItem(itemName);
-        Restaurant rest = ReservationSystemData.getInstance().getRestaurant(restaurantId);
+        MenuItem newItem = ReservationSystem.getInstance().getMenuItem(itemName);
+        Restaurant rest = ReservationSystem.getInstance().getRestaurant(restaurantId);
         try {
             rest.addMenuItem(newItem, price);
             // Output
@@ -41,7 +41,7 @@ public class ItemController {
 
         // Handle input
         MenuItem menuItem = new MenuItem(itemName, ingredients);
-        ReservationSystemData.getInstance().addMenuItem(menuItem);
+        ReservationSystem.getInstance().addMenuItem(menuItem);
 
         // Output
         System.out.printf("%s created%n", itemName);
@@ -57,9 +57,9 @@ public class ItemController {
         int quantity = Integer.parseInt(tokens[6]);
 
         // Handle input
-        Customer customer = ReservationSystemData.getInstance().getCustomer(customerId);
-        Restaurant restaurant = ReservationSystemData.getInstance().getRestaurant(restaurantId);
-        MenuItem menuItem = ReservationSystemData.getInstance().getMenuItem(menuItemName);
+        Customer customer = ReservationSystem.getInstance().getCustomer(customerId);
+        Restaurant restaurant = ReservationSystem.getInstance().getRestaurant(restaurantId);
+        MenuItem menuItem = ReservationSystem.getInstance().getMenuItem(menuItemName);
         try {
             Reservation reservation = restaurant.orderItem(customer, reservationDate, reservationTime, menuItem, quantity);
             // int totalPrice = restaurant.getRestaurantMenuItems().get(menuItem.getName()).getPrice() * quantity;
@@ -86,12 +86,12 @@ public class ItemController {
         String itemName = tokens[1];
 
         // Handle Input
-        if (ReservationSystemData.getInstance().isMenuItemAbsent(itemName)) {
+        if (ReservationSystem.getInstance().isMenuItemAbsent(itemName)) {
             System.out.println("ERROR: item doesn't exist");
             return;
         }
 
-        MenuItem item = ReservationSystemData.getInstance().getMenuItem(itemName);
+        MenuItem item = ReservationSystem.getInstance().getMenuItem(itemName);
         try {
             double price = item.getAveragePrice();
             // Output
@@ -104,7 +104,7 @@ public class ItemController {
 
 
     public static void handleViewAllMenuItems(String[] tokens) {
-        for (MenuItem menuItem : ReservationSystemData.getInstance().getMenuItems()) {
+        for (MenuItem menuItem : ReservationSystem.getInstance().getMenuItems()) {
             String itemName = menuItem.getName();
             System.out.println(itemName);
         }
@@ -115,7 +115,7 @@ public class ItemController {
         String itemName = tokens[1];
 
         // Handle Input
-        MenuItem menuItem = ReservationSystemData.getInstance().getMenuItem(itemName);
+        MenuItem menuItem = ReservationSystem.getInstance().getMenuItem(itemName);
         String[] ingredientArray = menuItem.getIngredients();
         StringBuilder ingredients = new StringBuilder("Ingredients: ");
         for (int i = 0; i < ingredientArray.length; i++) {
@@ -133,7 +133,7 @@ public class ItemController {
         String restaurantId = tokens[1];
 
         // Handle Input
-        Restaurant restaurant = ReservationSystemData.getInstance().getRestaurant(restaurantId);
+        Restaurant restaurant = ReservationSystem.getInstance().getRestaurant(restaurantId);
         Map<String, RestaurantMenuItem> items = restaurant.getRestaurantMenuItems();
         for (RestaurantMenuItem item : items.values()) {
             // Output
@@ -146,15 +146,15 @@ public class ItemController {
         String itemName = tokens[1];
 
         // Handle Input
-        if (ReservationSystemData.getInstance().isMenuItemAbsent(itemName)) {
+        if (ReservationSystem.getInstance().isMenuItemAbsent(itemName)) {
             System.out.println("ERROR: item doesn't exist");
             return;
         }
 
-        MenuItem item = ReservationSystemData.getInstance().getMenuItem(itemName);
+        MenuItem item = ReservationSystem.getInstance().getMenuItem(itemName);
         try {
             int popularity = item.calculatePopularity();
-            int totalRestaurants = ReservationSystemData.getInstance().getRestaurants().size();
+            int totalRestaurants = ReservationSystem.getInstance().getRestaurants().size();
             double popularityPercentage = (popularity / (double) totalRestaurants) * 100;
             if (popularityPercentage > 50) {
                 System.out.printf("Popular: %s offered at %d out of %d restaurants (%.0f%%)\n", tokens[1], popularity, totalRestaurants, popularityPercentage);

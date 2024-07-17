@@ -4,6 +4,8 @@ import org.group4.exceptions.MenuItemException;
 import org.group4.exceptions.NoSpaceException;
 import org.group4.exceptions.OrderFoodException;
 import org.group4.exceptions.ReservationException;
+import org.group4.requests.CreateRestaurantRequest;
+import org.group4.requests.ReservationRequest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,7 +39,6 @@ public class Restaurant {
         this.top10 = top10;
         this.owner = owner;
         this.seatingCapacity = seatingCapacity;
-        owner.addOwnedRestaurant(this);
         this.revenue = 0;
         this.reviewCount = 0;
         this.licenseId = licenseId;
@@ -134,6 +135,13 @@ public class Restaurant {
         reservations.put(reservation.getIdentifier(), reservation);
         customer.addReservation(reservation);
         return reservation;
+    }
+
+    public Reservation makeReservation(ReservationRequest request)
+            throws ReservationException.Conflict, ReservationException.FullyBooked {
+        Customer customer = ReservationSystem.getInstance().getCustomer(request.customerId());
+        LocalDateTime dateTime = LocalDateTime.parse(request.dateTime());
+        return makeReservation(customer, request.partySize(), dateTime, request.credits());
     }
 
     public Reservation orderItem(Customer customer, LocalDate reservationDate, LocalTime reservationTime, MenuItem item, int quantity)

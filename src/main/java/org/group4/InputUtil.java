@@ -1,9 +1,8 @@
-package org.group4.serverUtil;
+package org.group4;
 
 import io.javalin.http.Context;
-import org.group4.Address;
 
-public class FormUtil {
+public class InputUtil {
 
     public static Address formParamAddress(Context context) {
         String street = context.formParamAsClass("street", String.class).get();
@@ -11,5 +10,9 @@ public class FormUtil {
         String zip = context.formParamAsClass("zip", String.class).get();
 
         return new Address(street, state, zip);
+    }
+
+    public static String nullify(String input) {
+        return input.equals("null") ? null : input;
     }
 }

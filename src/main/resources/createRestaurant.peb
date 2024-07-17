@@ -11,4 +11,6 @@
     {{ formInput("text", "state") }}
     {{ formInput("text", "zip") }}
     {{ formInput("number", "capacity") }}
+    {{ formInput("text", "ownerId") }}
+    {{ formInput("text", "licenseId") }}
 {% endblock %}

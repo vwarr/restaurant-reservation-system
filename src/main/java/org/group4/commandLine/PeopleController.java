@@ -3,7 +3,7 @@ package org.group4.commandLine;
 import org.group4.exceptions.ReservationException;
 import org.group4.Customer;
 import org.group4.Owner;
-import org.group4.ReservationSystemData;
+import org.group4.ReservationSystem;
 import org.group4.Restaurant;
 
 import java.time.LocalDate;
@@ -29,7 +29,7 @@ public class PeopleController {
                 .address(streetName, state, zipCode)
                 .funds(funds)
                 .build();
-        ReservationSystemData.getInstance().addCustomer(customer);
+        ReservationSystem.getInstance().addCustomer(customer);
 
         // Output
         System.out.printf("Customer added: %s - %s %s%n", customer.getId(), customer.getFirstName(), customer.getLastName());
@@ -47,7 +47,7 @@ public class PeopleController {
         String restaurantGroup = tokens[8];
 
         // Handle Input
-        if (ReservationSystemData.getInstance().doesOwnerExist(ownerId)) {
+        if (ReservationSystem.getInstance().doesOwnerExist(ownerId)) {
             System.out.println("ERROR: duplicate unique identifier");
             return;
         }
@@ -59,7 +59,7 @@ public class PeopleController {
                 .startDate(startDate)
                 .restaurantGroup(restaurantGroup)
                 .build();
-        ReservationSystemData.getInstance().addOwner(owner);
+        ReservationSystem.getInstance().addOwner(owner);
 
         // Output
         System.out.printf("Owner added: %s - %s %s\n", owner.getId(), owner.getFirstName(), owner.getLastName());
@@ -68,7 +68,7 @@ public class PeopleController {
     public static void handleViewOwners(String[] tokens) {
         String restaurantGroup = tokens[1];
         //Kind of inefficient bc we check over every owner? do we need a restaurant group class?
-        for (Owner o : ReservationSystemData.getInstance().getOwners()) {
+        for (Owner o : ReservationSystem.getInstance().getOwners()) {
             if (o.getRestaurantGroup().equals(restaurantGroup)) {
                 System.out.printf("%s %s%n", o.getFirstName(), o.getLastName());
             }
@@ -76,7 +76,7 @@ public class PeopleController {
     }
 
     public static void handleViewAllCustomers(String[] tokens) {
-        for (Customer customer : ReservationSystemData.getInstance().getCustomers()) {
+        for (Customer customer : ReservationSystem.getInstance().getCustomers()) {
             String id = customer.getId();
             String firstName = customer.getFirstName();
             String lastName = customer.getLastName();
@@ -94,8 +94,8 @@ public class PeopleController {
         List<String> tags = Arrays.asList(tokens[6].split(":"));
 
         // Handle Input
-        Customer customer = ReservationSystemData.getInstance().getCustomer(customerId);
-        Restaurant restaurant = ReservationSystemData.getInstance().getRestaurant(restaurantId);
+        Customer customer = ReservationSystem.getInstance().getCustomer(customerId);
+        Restaurant restaurant = ReservationSystem.getInstance().getRestaurant(restaurantId);
         try {
             customer.reviewRestaurant(restaurant, reservationDate, reservationTime, rating, tags);
             // Output

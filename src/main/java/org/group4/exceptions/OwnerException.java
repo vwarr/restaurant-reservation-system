@@ -8,7 +8,7 @@ public class OwnerException {
         }
     }
 
-    public static class OwnerDoesNotExist extends Exception {
-        public OwnerDoesNotExist() { super("ERROR: owner does not exist"); }
+    public static class DoesNotExist extends Exception {
+        public DoesNotExist() { super("ERROR: owner does not exist"); }
     }
 }

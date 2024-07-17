@@ -2,7 +2,7 @@ package org.group4.serverUtil;
 
 import org.group4.Customer;
 import org.group4.Owner;
-import org.group4.ReservationSystemData;
+import org.group4.ReservationSystem;
 import org.group4.Restaurant;
 
 import java.time.LocalDate;
@@ -11,7 +11,7 @@ public class TestData {
 
     public static void generateCustomers() {
         // create_customer,CUST001,Angel,Cabrera,Miami,FL,33122,100.0
-        ReservationSystemData.getInstance().addCustomer(
+        ReservationSystem.getInstance().addCustomer(
                 new Customer.Builder("CUST001")
                         .firstName("Angel")
                         .lastName("Cabrera")
@@ -20,7 +20,7 @@ public class TestData {
                         .build());
 
         // create_customer,CUST002,Mark,Moss,Atlanta,GA,30313,100.0
-        ReservationSystemData.getInstance().addCustomer(
+        ReservationSystem.getInstance().addCustomer(
                 new Customer.Builder("CUST002")
                         .firstName("Mark")
                         .lastName("Moss")
@@ -29,7 +29,7 @@ public class TestData {
                         .build());
 
         // create_customer,CUST003,Neel,Ganediwal,Parkland,FL,33067,100.0
-        ReservationSystemData.getInstance().addCustomer(
+        ReservationSystem.getInstance().addCustomer(
                 new Customer.Builder("CUST003")
                         .firstName("Neel")
                         .lastName("Ganediwal")
@@ -38,7 +38,7 @@ public class TestData {
                         .build());
 
         // create_customer,CUST004,Henry,Owen,Chicago,IL,60629,100.0
-        ReservationSystemData.getInstance().addCustomer(
+        ReservationSystem.getInstance().addCustomer(
                 new Customer.Builder("CUST004")
                         .firstName("Henry")
                         .lastName("Owen")
@@ -53,7 +53,7 @@ public class TestData {
         create_owner, OWN002, Andrall, Pearson, Louisville, KY, 40213, 2015-07-17, Yum Brands
         create_owner, OWN003, Joshua, Kobza, Toronto, ON, M5X, 2023-05-01, Restaurant Brands
         */
-        ReservationSystemData.getInstance().addOwner(
+        ReservationSystem.getInstance().addOwner(
             new Owner.Builder("OWN001")
                 .firstName("Ricardo")
                 .lastName("Cardenas")
@@ -63,7 +63,7 @@ public class TestData {
                 .build()
         );
 
-        ReservationSystemData.getInstance().addOwner(
+        ReservationSystem.getInstance().addOwner(
             new Owner.Builder("OWN002")
                 .firstName("Andrall")
                 .lastName("Pearson")
@@ -73,7 +73,7 @@ public class TestData {
                 .build()
         );
 
-        ReservationSystemData.getInstance().addOwner(
+        ReservationSystem.getInstance().addOwner(
             new Owner.Builder("OWN003")
                 .firstName("Joshua")
                 .lastName("Kobza")
@@ -100,68 +100,68 @@ create_restaurant, REST006, Blaze Pizza, San Francisco, CA, 92101, 7,
 OWN003, FS752
          */
 
-        ReservationSystemData.getInstance().addRestaurant(
+        ReservationSystem.getInstance().addRestaurant(
             new Restaurant.Builder("REST001")
                 .name("Mellow Mushroom")
                 .address("Boca Raton", "FL", "33431")
                 .seatingCapacity(8)
                 .licenseId("FS817")
-                .owner(ReservationSystemData.getInstance().getOwner("OWN001"))
+                .owner(ReservationSystem.getInstance().getOwner("OWN001"))
                 .top10(false)
                 .rating(-1)
                 .build());
 
-        ReservationSystemData.getInstance().addRestaurant(
+        ReservationSystem.getInstance().addRestaurant(
             new Restaurant.Builder("REST002")
                 .name("Little Caesars")
                 .address("Key West", "FL", "30289")
                 .seatingCapacity(7)
                 .licenseId("FS526")
-                .owner(ReservationSystemData.getInstance().getOwner("OWN001"))
+                .owner(ReservationSystem.getInstance().getOwner("OWN001"))
                 .top10(false)
                 .rating(-1)
                 .build());
 
-        ReservationSystemData.getInstance().addRestaurant(
+        ReservationSystem.getInstance().addRestaurant(
             new Restaurant.Builder("REST003")
                 .name("Pizza Hut")
                 .address("Buckhead", "GA", "30625")
                 .seatingCapacity(7)
                 .licenseId("FS035")
-                .owner(ReservationSystemData.getInstance().getOwner("OWN002"))
+                .owner(ReservationSystem.getInstance().getOwner("OWN002"))
                 .top10(false)
                 .rating(-1)
                 .build());
 
-        ReservationSystemData.getInstance().addRestaurant(
+        ReservationSystem.getInstance().addRestaurant(
             new Restaurant.Builder("REST004")
                 .name("Domino's")
                 .address("Alpharetta", "GA", "30504")
                 .seatingCapacity(7)
                 .licenseId("FS182")
-                .owner(ReservationSystemData.getInstance().getOwner("OWN002"))
+                .owner(ReservationSystem.getInstance().getOwner("OWN002"))
                 .top10(false)
                 .rating(-1)
                 .build());
 
-        ReservationSystemData.getInstance().addRestaurant(
+        ReservationSystem.getInstance().addRestaurant(
             new Restaurant.Builder("REST005")
                 .name("Papa Johns")
                 .address("San Diego", "CA", "94105")
                 .seatingCapacity(7)
                 .licenseId("FS942")
-                .owner(ReservationSystemData.getInstance().getOwner("OWN003"))
+                .owner(ReservationSystem.getInstance().getOwner("OWN003"))
                 .top10(false)
                 .rating(-1)
                 .build());
 
-        ReservationSystemData.getInstance().addRestaurant(
+        ReservationSystem.getInstance().addRestaurant(
             new Restaurant.Builder("REST006")
                 .name("Blaze Pizza")
                 .address("San Francisco", "CA", "92101")
                 .seatingCapacity(7)
                 .licenseId("FS752")
-                .owner(ReservationSystemData.getInstance().getOwner("OWN003"))
+                .owner(ReservationSystem.getInstance().getOwner("OWN003"))
                 .top10(false)
                 .rating(-1)
                 .build());

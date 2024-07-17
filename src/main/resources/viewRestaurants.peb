@@ -9,7 +9,10 @@
                     <h5 class="mb-1"><span class="text-secondary">{{ r.id }}</span> {{ r.name }}</h5>
                     <small>${{ r.revenue }}</small>
                 </div>
-                <p class="mb-1">Owned by {{ r.owner.firstName }} {{ r.owner.lastName }} with license {{ r.licenseId }}</p>
+                <div class="d-flex w-100 justify-content-between">
+                    <p class="mb-1">Owned by {{ r.owner.firstName }} {{ r.owner.lastName }} with license {{ r.licenseId }}</p>
+                    <small>{{ r.rating }}/50</small>
+                </div>
                 <small class="text-info">{{ r.address.streetName }}, {{ r.address.stateAbbreviation() }} {{ r.address.zipCode() }}</small>
             </div>
         {% endfor %}

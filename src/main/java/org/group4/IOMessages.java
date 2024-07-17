@@ -38,14 +38,6 @@ public class IOMessages {
         return SEATS_AVAILABLE.formatted(customer.getFirstName(), customer.getLastName());
     }
 
-    private static final String SEATS_UNAVAILABLE = """
-            Seats not available - Request denied
-            """;
-
-    public static String getNoSeatsMessage() {
-        return SEATS_UNAVAILABLE;
-    }
-
     static String getArrivalStatusMessage(ArrivalStatus status, Customer customer, Restaurant restaurant) {
         switch (status) {
             case WALK_IN -> {

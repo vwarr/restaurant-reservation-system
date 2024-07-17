@@ -1,12 +1,13 @@
 package org.group4.exceptions;
 
+import org.group4.Customer;
 import org.group4.Reservation;
 
 public class ReservationException {
 
     public static class Conflict extends Exception {
         public Conflict() {
-            super("Customer has a reservation within %s hours of this time".formatted(Reservation.RESERVATION_DURATION));
+            super("Reservation request denied, customer already has reservation with another restaurant within 2 hours of the requested time");
         }
     }
     public static class Missed extends Exception {
@@ -14,7 +15,7 @@ public class ReservationException {
     }
     public static class FullyBooked extends Exception {
         public FullyBooked() {
-            super("Restaurant is fully booked at this time");
+            super("Reservation request denied, table has another active reservation within 2 hours of the requested time");
         }
     }
 

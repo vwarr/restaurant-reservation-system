@@ -3,100 +3,66 @@ package org.group4.commandLine;
 import org.group4.*;
 import org.group4.exceptions.NoSpaceException;
 import org.group4.exceptions.ReservationException;
+import org.group4.requests.CreateRestaurantRequest;
+import org.group4.requests.CustomerArrivalRequest;
+import org.group4.requests.ReservationRequest;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class RestaurantController {
 
     public static void handleCreateRestaurant(String[] tokens) {
-        // Sort Input
-        String restaurantId = tokens[1];
-        String restaurantName = tokens[2];
-        String streetName = tokens[3];
-        String state = tokens[4];
-        String zipCode = tokens[5];
-        int seatingCapacity = Integer.parseInt(tokens[6]);
-        String ownerId = tokens[7];
-        String licenseId = tokens[8];
-
-        // Handle input
-        Owner owner = ReservationSystemData.getInstance().getOwner(ownerId);
-        if (owner == null) {
-            // idk why but printing "ERROR: " before the statement causes the loop to terminate
-            System.out.println("ERROR: owner doesn't exist");
-            return;
+        try {
+            CreateRestaurantRequest request = new CreateRestaurantRequest(tokens);
+            Restaurant restaurant = ReservationSystem.getInstance().createRestaurant(request);
+            System.out.printf("Restaurant created: %s (%s) - %s, %s %s\n",
+                    restaurant.getId(), restaurant.getName(), restaurant.getAddress().streetName(), restaurant.getAddress().stateAbbreviation(), restaurant.getAddress().zipCode());
+            System.out.printf("%s (%s %s) owns %s (%s)\n",
+                    restaurant.getOwner().getId(), restaurant.getOwner().getFirstName(), restaurant.getOwner().getLastName(), restaurant.getId(), restaurant.getName());
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
-        Restaurant restaurant = new Restaurant.Builder(restaurantId)
-                .name(restaurantName)
-                .seatingCapacity(seatingCapacity)
-                .address(streetName, state, zipCode)
-                .owner(owner)
-                .top10(false)
-                .rating(-1)
-                .licenseId(licenseId)
-                .build();
-
-        owner.addOwnedRestaurant(restaurant);
-        owner.addLicense(restaurantId, licenseId);
-
-        ReservationSystemData.getInstance().addRestaurant(restaurant);
-
-        System.out.printf("Restaurant created: %s (%s) - %s, %s %s\n", restaurant.getId(), restaurant.getName(), streetName, state,
-                zipCode);
-        System.out.printf("%s (%s %s) owns %s (%s)\n", owner.getId(), owner.getFirstName(), owner.getLastName(),
-                restaurant.getId(), restaurant.getName());
     }
 
     public static void handleMakeReservation(String[] tokens) {
-        // Sort input
-        String customerId = tokens[1];
-        String restaurantId = tokens[2];
-        int partySize = Integer.parseInt(tokens[3]);
-        // Turns the date (example: 2024-05-24) and the time (ex: 19:00) to an ISO datetime: "2024-05-24T19:00:00"
-        LocalDateTime dateTime = LocalDateTime.parse("%sT%s:00".formatted(tokens[4], tokens[5]));
-        int credits = Integer.parseInt(tokens[6]);
-
-        // Handle Input
-        Customer customer = ReservationSystemData.getInstance().getCustomer(customerId);
-        Restaurant restaurant = ReservationSystemData.getInstance().getRestaurant(restaurantId);
         try {
-            Reservation res = restaurant.makeReservation(customer, partySize, dateTime, credits);
-            System.out.printf("Reservation requested for %s", customer.getId());
-            System.out.print("\nReservation confirmed");
-            System.out.printf("\nReservation made for %s (%s %s) at %s\n", customer.getId(), customer.getFirstName(), customer.getLastName(), restaurant.getName());
-        } catch(ReservationException.Conflict rce) {
-            System.out.printf("Reservation requested for %s", customer.getId());
-            System.out.print("\nReservation request denied, customer already has reservation with another restaurant within 2 hours of the requested time\n");
-        } catch(ReservationException.FullyBooked nse) {
-            System.out.printf("Reservation requested for %s %s", customer.getFirstName(), customer.getLastName());
-            System.out.print("\nReservation request denied, table has another active reservation within 2 hours of the requested time\n");
+            // Validate that stuff actually exists
+            ReservationRequest request = new ReservationRequest(tokens);
+            System.out.printf("Reservation requested for %s%n", request.customerId());
+
+            Reservation reservation = ReservationSystem.getInstance().createReservation(request);
+            Customer customer = reservation.getCustomer();
+            Restaurant restaurant = ReservationSystem.getInstance().getRestaurant(request.restaurantId());
+            System.out.println("Reservation confirmed");
+            System.out.printf("Reservation made for %s (%s %s) at %s%n", customer.getId(), customer.getFirstName(), customer.getLastName(), restaurant.getName());
+        } catch(ReservationException.Conflict | ReservationException.FullyBooked | IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
     }
 
     public static void handleCustomerArrival(String[] tokens) {
-        // Sort Input
-        String customerId = tokens[1];
-        String restaurantId = tokens[2];
-        LocalDate reservationDate = LocalDate.parse(tokens[3]);
-        LocalTime arrivalTime = LocalTime.parse(tokens[4]);
-        LocalTime reservationTime = tokens[5].equals("null") ? null : LocalTime.parse(tokens[5]);
-
-        // Handle Input
-        Customer customer = ReservationSystemData.getInstance().getCustomer(customerId);
-        Restaurant restaurant = ReservationSystemData.getInstance().getRestaurant(restaurantId);
+        // This is terrible practice, but we know customer MUST be valid if a no space exception is thrown
+        Customer customer = null;
         try {
-            restaurant.onCustomerArrival(customer, reservationDate, arrivalTime, reservationTime);
+            CustomerArrivalRequest request = new CustomerArrivalRequest(tokens);
+            customer = ReservationSystem.getInstance().getCustomer(request.customerId());
+
+            ReservationSystem.getInstance().registerCustomerArrival(request);
+
+            System.out.print(IOMessages.getCustomerInfoMessage(customer));
         } catch(NoSpaceException e) {
             // Although kinda scuffed to catch this message here it makes writing tests easier
-            System.out.print(IOMessages.getNoSeatsMessage());
+            System.out.print(e.getMessage());
+            // NEVER do this with a value that can be null
+            System.out.print(IOMessages.getCustomerInfoMessage(customer));
+        } catch(IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
-        System.out.print(IOMessages.getCustomerInfoMessage(customer));
     }
 
     public static void handleViewAllRestaurants(String[] tokens) {
-        for (Restaurant r : ReservationSystemData.getInstance().getRestaurants()) {
+        for (Restaurant r : ReservationSystem.getInstance().getRestaurants()) {
             System.out.printf("%s (%s)%n", r.getId(), r.getName());
         }
     }
@@ -105,12 +71,15 @@ public class RestaurantController {
         // Sort Input
         String ownerId = tokens[1];
 
+        if (!ReservationSystem.getInstance().doesOwnerExist(ownerId)) {
+            System.out.println("ERROR: Owner does not exist");
+            return;
+        }
+
         // Handle input
-        Owner owner = ReservationSystemData.getInstance().getOwner(ownerId);
-        if (owner != null) {
-            for (Restaurant r : owner.getOwnedRestaurants().values()) {
-                System.out.printf("%s (%s): Unified License - %s%n", r.getId(), r.getName(), r.getLicenseId());
-            }
+        Owner owner = ReservationSystem.getInstance().getOwner(ownerId);
+        for (Restaurant r : owner.getOwnedRestaurants().values()) {
+            System.out.printf("%s (%s): Unified License - %s%n", r.getId(), r.getName(), r.getLicenseId());
         }
     }
 }

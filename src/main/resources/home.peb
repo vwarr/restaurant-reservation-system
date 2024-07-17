@@ -3,8 +3,8 @@
 {% block title %} Home {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h1> HomePage </h1>
-        <p> Welcome to my home page. My name is {{ name }}.</p>
+    <div class="container text-center">
+        <h1 class="display-1"> Home </h1>
+
     </div>
 {% endblock %}
