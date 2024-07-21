@@ -1,0 +1,11 @@
+    {% extends "bases/createFormBase.peb" %}
+
+        {% block action %}/menu/add{% endblock %}
+
+        {% block formTitle %}Add Menu Item{% endblock %}
+
+    {% block formBody %}
+    {{ formInput("text", "itemName") }}
+    {{ formInput("text", "restaurantID") }}
+    {{ formInput("number", "price") }}
+    {% endblock %}

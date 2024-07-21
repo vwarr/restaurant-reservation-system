@@ -1,5 +1,6 @@
 package org.group4;
 
+import org.group4.exceptions.MenuItemException;
 import org.group4.exceptions.NoSpaceException;
 import org.group4.exceptions.OrderFoodException;
 import org.group4.exceptions.ReservationException;
@@ -132,6 +133,19 @@ public class ReservationSystem {
         return customers.containsKey(customerId);
     }
 
+    public MenuItem createMenuItem(CreateMenuItemRequest request) {
+        String[] ingredients = request.ingredients().split(":");
+        MenuItem menuItem = new MenuItem(
+                request.itemName(),
+                ingredients
+        );
+        addMenuItem(menuItem);
+        return menuItem;
+    }
+    public void addMenuItemRestaurant(CreateAddMenuItemRequest request) throws MenuItemException.AlreadyAdded {
+        Restaurant restaurant = getRestaurant(request.restaurantID());
+        restaurant.addMenuItem(getMenuItem(request.itemName()), request.price());
+    }
     public void addMenuItem(MenuItem menuItem) {
         menuItems.put(menuItem.getName(), menuItem);
     }

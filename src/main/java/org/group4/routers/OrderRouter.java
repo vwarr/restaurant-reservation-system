@@ -20,7 +20,7 @@ public class OrderRouter {
     }
 
     void getOrder(@NotNull Context context) {
-        context.render("order.peb");
+        context.render("order.peb", Collections.singletonMap("customers", ReservationSystem.getInstance().getCustomers()));
     }
 
 
