@@ -1,10 +1,10 @@
 package org.group4;
 
+import org.group4.exceptions.MenuItemException;
 import org.group4.exceptions.NoSpaceException;
+import org.group4.exceptions.OrderFoodException;
 import org.group4.exceptions.ReservationException;
-import org.group4.requests.CreateRestaurantRequest;
-import org.group4.requests.CustomerArrivalRequest;
-import org.group4.requests.ReservationRequest;
+import org.group4.requests.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -96,10 +96,27 @@ public class ReservationSystem {
         restaurant.onCustomerArrival(customer, LocalDate.parse(request.reservationDate()), LocalTime.parse(request.arrivalTime()), LocalTime.parse(request.reservationTime()));
     }
 
+    public void orderItem(CreateOrderRequest request) throws OrderFoodException.NotInRestaurant, ReservationException.DoesNotExist, OrderFoodException.InsufficientCredits {
+        Customer customer = getCustomer(request.customerId());
+        Restaurant restaurant = getRestaurant(request.restaurantId());
+        restaurant.orderItem(customer, request.reservationDate(), request.reservationTime(), getMenuItem(request.menuItemName()), request.quantity());
+    }
+
     public boolean doesRestaurantExist(String restaurantId) {
         return restaurants.containsKey(restaurantId);
     }
-
+    public Customer createCustomer(CreateCustomerRequest request) {
+        Address address = new Address(request.city(), request.state(), request.zipcode());
+        Customer customer = new Customer(
+                request.customerId(),
+                request.firstName(),
+                request.lastName(),
+                address,
+                request.funds()
+        );
+        addCustomer(customer);
+        return customer;
+    }
     public Customer getCustomer(String customerId) {
         return customers.get(customerId);
     }
@@ -116,6 +133,19 @@ public class ReservationSystem {
         return customers.containsKey(customerId);
     }
 
+    public MenuItem createMenuItem(CreateMenuItemRequest request) {
+        String[] ingredients = request.ingredients().split(":");
+        MenuItem menuItem = new MenuItem(
+                request.itemName(),
+                ingredients
+        );
+        addMenuItem(menuItem);
+        return menuItem;
+    }
+    public void addMenuItemRestaurant(CreateAddMenuItemRequest request) throws MenuItemException.AlreadyAdded {
+        Restaurant restaurant = getRestaurant(request.restaurantID());
+        restaurant.addMenuItem(getMenuItem(request.itemName()), request.price());
+    }
     public void addMenuItem(MenuItem menuItem) {
         menuItems.put(menuItem.getName(), menuItem);
     }
@@ -132,4 +162,9 @@ public class ReservationSystem {
         return !menuItems.containsKey(menuItemName);
     }
 
+    public void addReview(CreateReviewRequest request) throws ReservationException.NotSuccessful, ReservationException.Missed, ReservationException.DoesNotExist {
+        Customer customer = getCustomer(request.customerId());
+        customer.reviewRestaurant(getRestaurant(request.restaurantId()), request.reservationDate(),
+                request.reservationTime(), request.rating(), request.tags());
+    }
 }

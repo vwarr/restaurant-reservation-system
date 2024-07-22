@@ -1,0 +1,14 @@
+    {% extends "bases/createFormBase.peb" %}
+
+        {% block action %}/review/create{% endblock %}
+
+        {% block formTitle %}Create Review{% endblock %}
+
+    {% block formBody %}
+    {{ formInput("text", "customerId") }}
+    {{ formInput("text", "restaurantId") }}
+    {{ formInput("date", "reservationDate") }}
+    {{ formInput("time", "reservationTime") }}
+    {{ formInput("number", "rating") }}
+    {{ formInput("text", "tags") }}
+    {% endblock %}

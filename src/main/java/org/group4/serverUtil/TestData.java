@@ -1,9 +1,6 @@
 package org.group4.serverUtil;
 
-import org.group4.Customer;
-import org.group4.Owner;
-import org.group4.ReservationSystem;
-import org.group4.Restaurant;
+import org.group4.*;
 
 import java.time.LocalDate;
 

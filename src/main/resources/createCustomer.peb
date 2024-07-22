@@ -1,0 +1,15 @@
+    {% extends "bases/createFormBase.peb" %}
+
+        {% block action %}/customers/create{% endblock %}
+
+        {% block formTitle %}Create Customer{% endblock %}
+
+    {% block formBody %}
+    {{ formInput("text", "customerId") }}
+    {{ formInput("text", "firstName") }}
+    {{ formInput("text", "lastName") }}
+    {{ formInput("text", "city") }}
+    {{ formInput("text", "state") }}
+    {{ formInput("text", "zipcode") }}
+    {{ formInput("number", "funds") }}
+    {% endblock %}
