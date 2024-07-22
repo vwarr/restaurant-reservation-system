@@ -1,0 +1,14 @@
+    {% extends "bases/createFormBase.peb" %}
+
+        {% block action %}/order/create{% endblock %}
+
+        {% block formTitle %}Create Order{% endblock %}
+
+    {% block formBody %}
+    {{ formInput("text", "customerId") }}
+    {{ formInput("text", "restaurantId") }}
+    {{ formInput("date", "reservationDate") }}
+    {{ formInput("time", "reservationTime") }}
+    {{ formInput("text", "menuItemName") }}
+    {{ formInput("number", "quantity") }}
+    {% endblock %}

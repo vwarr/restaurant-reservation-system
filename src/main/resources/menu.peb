@@ -1,0 +1,15 @@
+    {% extends "bases/base.peb" %}
+        {% block title %} Customers {% endblock %}
+
+    {% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                    {% include "addMenuItem.peb" %}
+            </div>
+            <div class="col">
+                    {% include "createMenu.peb" %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
