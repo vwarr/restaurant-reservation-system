@@ -1,0 +1,13 @@
+    {% extends "bases/createFormBase.peb" %}
+
+        {% block action %}/reservations/arrive{% endblock %}
+
+        {% block formTitle %}Customer Arrival{% endblock %}
+
+    {% block formBody %}
+    {{ formInput("text", "customerId") }}
+    {{ formInput("text", "restaurantId") }}
+    {{ formInput("text", "reservationDate") }}
+    {{ formInput("text", "arrivalTime") }}
+    {{ formInput("text", "reservationTime") }}
+    {% endblock %}

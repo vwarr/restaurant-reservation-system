@@ -1,0 +1,15 @@
+    {% extends "bases/base.peb" %}
+        {% block title %} Reservation {% endblock %}
+
+    {% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                    {% include "createReservation.peb" %}
+            </div>
+            <div class="col">
+                    {% include "arrival.peb" %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
