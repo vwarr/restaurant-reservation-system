@@ -6,5 +6,6 @@
     {{ navItem("Menu", "/menu") }}
    {{ navItem("Order", "/order") }}
     {{ navItem("Customer", "/customers") }}
+    {{ navItem("Review", "/review") }}
 {% endblock %}
 

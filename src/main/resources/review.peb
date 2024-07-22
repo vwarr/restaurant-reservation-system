@@ -1,0 +1,12 @@
+    {% extends "bases/base.peb" %}
+    {% block title %} Review {% endblock %}
+
+    {% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                    {% include "createReview.peb" %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}

@@ -162,4 +162,9 @@ public class ReservationSystem {
         return !menuItems.containsKey(menuItemName);
     }
 
+    public void addReview(CreateReviewRequest request) throws ReservationException.NotSuccessful, ReservationException.Missed, ReservationException.DoesNotExist {
+        Customer customer = getCustomer(request.customerId());
+        customer.reviewRestaurant(getRestaurant(request.restaurantId()), request.reservationDate(),
+                request.reservationTime(), request.rating(), request.tags());
+    }
 }

@@ -43,6 +43,7 @@ public class Main {
             new OrderRouter(app);
             new CustomerRouter(app);
             new MenuRouter(app);
+            new ReviewRouter(app);
         }
     }
 
