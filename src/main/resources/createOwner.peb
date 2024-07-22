@@ -6,11 +6,11 @@
 
     {% block formBody %}
     {{ formInput("text", "id") }}
-    {{ formInput("text", "First name") }}
-    {{ formInput("text", "Last name") }}
+    {{ formInput("text", "first name") }}
+    {{ formInput("text", "last name") }}
     {{ formInput("text", "street") }}
     {{ formInput("text", "state") }}
     {{ formInput("text", "zip") }}
     {{ formInput("text", "restaurantGroup") }}
-    {{ formInput("text", "startDate") }}
+    {{ formInput("date", "startDate") }}
     {% endblock %}

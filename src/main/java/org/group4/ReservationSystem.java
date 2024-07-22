@@ -92,7 +92,7 @@ public class ReservationSystem {
 
     public Owner createOwner(CreateOwnerRequest request) {
         Owner owner = new Owner(
-                LocalDate.parse(request.startDate()),
+                request.startDate(),
                 request.ownerId(),
                 request.firstName(),
                 request.lastName(),

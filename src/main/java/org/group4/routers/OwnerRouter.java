@@ -2,6 +2,7 @@ package org.group4.routers;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import org.group4.Reservation;
 import org.group4.ReservationSystem;
 import org.group4.Owner;
 import org.group4.requests.CreateOwnerRequest;
@@ -19,7 +20,7 @@ public class OwnerRouter {
     void getOwners(@NotNull Context context) {
 //        context.render("restaurants.peb",
 //                Collections.singletonMap("restaurants", ReservationSystem.getInstance().getRestaurants()));
-        context.render("owners.peb");
+        context.render("owners.peb", Collections.singletonMap("owners", ReservationSystem.getInstance().getOwners()));
     }
 
     void createOwners(@NotNull Context context) {
