@@ -40,9 +40,6 @@ public record CreateOrderRequest(String customerId, String restaurantId, LocalDa
         int totalFunds = ReservationSystem.getInstance().getCustomer(customerId).getCredits() +
                 ReservationSystem.getInstance().getCustomer(customerId).getFunds();
         int cost = ReservationSystem.getInstance().getRestaurant(restaurantId).getRestaurantMenuItems().get(ReservationSystem.getInstance().getMenuItem(menuItemName)).getPrice() * quantity;
-        if(totalFunds < cost) {
-            throw new IllegalArgumentException("ERROR: Customer does not have enough funds");
-        }
     }
 
     public CreateOrderRequest(Context context) {

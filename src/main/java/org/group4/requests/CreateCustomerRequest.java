@@ -16,7 +16,7 @@ public record CreateCustomerRequest(String customerId, String firstName, String 
             throw new IllegalArgumentException("ERROR: First name cannot be blank");
         }
         if (lastName.isBlank()) {
-            throw new IllegalArgumentException("ERROR: Last name cannot be blank");
+            lastName = null;
         }
         if (city.isBlank()) {
             throw new IllegalArgumentException("ERROR: City cannot be blank");
