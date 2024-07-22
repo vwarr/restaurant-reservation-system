@@ -5,6 +5,7 @@ import io.javalin.http.Context;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
 import org.group4.commandLine.CommandLineController;
+import org.group4.routers.OwnerRouter;
 import org.group4.routers.ReservationRouter;
 import org.group4.routers.RestaurantRouter;
 import org.group4.serverUtil.HotReloadingFileLoader;
@@ -41,6 +42,7 @@ public class Main {
 
             new RestaurantRouter(app);
             new ReservationRouter(app);
+            new OwnerRouter(app);
         }
     }
 

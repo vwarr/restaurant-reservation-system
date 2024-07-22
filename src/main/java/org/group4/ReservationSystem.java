@@ -2,6 +2,7 @@ package org.group4;
 
 import org.group4.exceptions.NoSpaceException;
 import org.group4.exceptions.ReservationException;
+import org.group4.requests.CreateOwnerRequest;
 import org.group4.requests.CreateRestaurantRequest;
 import org.group4.requests.CustomerArrivalRequest;
 import org.group4.requests.ReservationRequest;
@@ -87,6 +88,20 @@ public class ReservationSystem {
         Customer customer = getCustomer(request.customerId());
         Restaurant restaurant = getRestaurant(request.restaurantId());
         return restaurant.makeReservation(customer, request.partySize(), LocalDateTime.parse(request.dateTime()), request.credits());
+    }
+
+    public Owner createOwner(CreateOwnerRequest request) {
+        Owner owner = new Owner(
+                LocalDate.parse(request.startDate()),
+                request.ownerId(),
+                request.firstName(),
+                request.lastName(),
+                request.address(),
+                request.restaurantGroup()
+        );
+
+        addOwner(owner);
+        return owner;
     }
 
     public void registerCustomerArrival(CustomerArrivalRequest request) throws NoSpaceException {

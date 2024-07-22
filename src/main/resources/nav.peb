@@ -3,5 +3,6 @@
 {% block navItems %}
    {{ navItem("Home", "/") }}
    {{ navItem("Restaurants", "/restaurants") }}
+    {{ navItem("Owners", "/owners") }}
 {% endblock %}
 
