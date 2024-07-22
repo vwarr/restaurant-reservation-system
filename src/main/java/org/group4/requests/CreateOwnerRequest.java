@@ -17,10 +17,6 @@ public record CreateOwnerRequest(String ownerId, String firstName, String lastNa
         if (firstName.isBlank()) {
             throw new IllegalArgumentException("ERROR: First name cannot be blank");
         }
-
-        if (lastName.isBlank()) {
-            throw new IllegalArgumentException("ERROR: Last name cannot be blank");
-        }
         if (address.streetName().isBlank()) {
             throw new IllegalArgumentException("ERROR: Street name cannot be blank");
         }

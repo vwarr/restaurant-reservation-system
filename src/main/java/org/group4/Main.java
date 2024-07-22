@@ -8,6 +8,7 @@ import org.group4.commandLine.CommandLineController;
 import org.group4.routers.OwnerRouter;
 import org.group4.routers.ReservationRouter;
 import org.group4.routers.RestaurantRouter;
+import org.group4.routers.*;
 import org.group4.serverUtil.HotReloadingFileLoader;
 import org.group4.serverUtil.PebbleFileRenderer;
 import org.group4.serverUtil.TestData;
@@ -43,6 +44,10 @@ public class Main {
             new RestaurantRouter(app);
             new ReservationRouter(app);
             new OwnerRouter(app);
+            new OrderRouter(app);
+            new CustomerRouter(app);
+            new MenuRouter(app);
+            new ReviewRouter(app);
         }
     }
 
