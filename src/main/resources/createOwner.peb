@@ -1,0 +1,16 @@
+    {% extends "bases/createFormBase.peb" %}
+
+        {% block action %}/owners/create{% endblock %}
+
+        {% block formTitle %}Create Owner{% endblock %}
+
+    {% block formBody %}
+    {{ formInput("text", "id") }}
+    {{ formInput("text", "first name") }}
+    {{ formInput("text", "last name") }}
+    {{ formInput("text", "street") }}
+    {{ formInput("text", "state") }}
+    {{ formInput("text", "zip") }}
+    {{ formInput("text", "restaurantGroup") }}
+    {{ formInput("date", "startDate") }}
+    {% endblock %}

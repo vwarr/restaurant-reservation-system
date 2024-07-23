@@ -1,0 +1,19 @@
+{# @pebvariable name="owners" type="java.util.Collection<org.group4.Owner>" #}
+
+<div class="container">
+    <h1 class="display-1"> Owners </h1>
+    <div class="list-group">
+            {% for o in owners %}
+            <div class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1"><span class="text-secondary">{{ o.id }}</span> {{ o.firstName }} {{ o.lastName }}</h5>
+                </div>
+                <div class="d-flex w-100 justify-content-between">
+                    <p class="mb-1">Operating since {{ o.startDate }}</p>
+{#                    <small>{{ r.rating }}/50</small>#}
+                </div>
+                <small class="text-info">{{ o.address.streetName }}, {{ o.address.stateAbbreviation() }} {{ o.address.zipCode() }}</small>
+            </div>
+            {% endfor %}
+    </div>
+</div>
