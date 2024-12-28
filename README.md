@@ -11,23 +11,25 @@ Open the project in Intellij and either use one of two preconfigured run options
 ## Problem Description
 The requirements for the project can be found [in the assets folder](assets/requirements.pdf)
 
-Use Case Diagram
-Screenshot 2024-11-13 at 7 03 40 PM
-Domain Models
-Screenshot 2024-11-13 at 7 03 06 PM
-Design Case Diagram
-Screenshot 2024-11-13 at 7 04 51 PM Screenshot 2024-11-13 at 7 07 40 PM
-Sequence Diagrams
-Screenshot 2024-11-13 at 7 05 50 PM
-Hungry Customer Screenshot 2024-11-13 at 7 08 26 PM
+## Use Case Diagram
+![image](https://github.com/user-attachments/assets/28eb1394-104d-4d9a-b27c-c2126e1747f1)
 
-Ingredients Screenshot 2024-11-13 at 7 09 37 PM
+## Domain Model
+![image](https://github.com/user-attachments/assets/768071fa-5570-4c71-bc16-744b44fdc7f1)
 
-View Owners Screenshot 2024-11-13 at 7 10 04 PM
+## Design Class Diagrams
+![image](https://github.com/user-attachments/assets/fb4b8d15-dee1-482b-a18b-7841805ff201)
+![image](https://github.com/user-attachments/assets/2a6e86f6-be29-4d19-a91e-1853fdf5682e)
 
-Motivation and Changes
+## Sequence Diagrams
+![image](https://github.com/user-attachments/assets/b72c3f75-8e6a-416c-af72-b17ee1ba0efe)
+![image](https://github.com/user-attachments/assets/dce9b14c-4ee6-4845-9a39-a50754d38bc4)
+![image](https://github.com/user-attachments/assets/ceb9f9c0-d139-40db-98a5-a6dc05ebb209)
+![image](https://github.com/user-attachments/assets/3a0cd5fc-5317-4b3e-b181-cbb2344945d5)
+
+## Motivation and Changes
 https://drive.google.com/file/d/1PayMaahy6heJ8GWLkcxIboq86tw7tfBv/view?usp=sharing
 
-Final Presentation
-https://docs.google.com/presentation/d/1l1Z_Dq2AKqK8sqsJ6ZWNhtdbS00mnmFRUCRYA7ExQIs/edit#slide=id.p
+## Final Presentation
+https://docs.google.com/presentation/d/1l1Z_Dq2AKqK8sqsJ6ZWNhtdbS00mnmFRUCRYA7ExQIs/view#slide=id.p
 
